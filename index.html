@@ -10,8 +10,6 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
-  <!-- Google Identity Services (Direct OAuth2 option) -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -199,7 +197,7 @@
     .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
     .icon-btn {
-      position: relative; height: 38px; min-width: 38px; padding: 0 0.8rem;
+      position: relative; height: 38px; min-width: 38px; padding: 0 0.85rem;
       display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
       border-radius: 9999px;
       background: color-mix(in srgb, var(--s-400) 8%, transparent);
@@ -300,7 +298,7 @@
       background: color-mix(in srgb, var(--s-500) 8%, transparent);
     }
 
-    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.3rem; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.25rem; }
     .dot-green { background: #34d399; box-shadow: 0 0 8px #34d399; }
     .dot-amber { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
 
@@ -323,7 +321,7 @@
       position: fixed; inset: 0; z-index: 70; background: rgba(2, 6, 23, 0.55);
       backdrop-filter: blur(5px); display: grid; place-items: center; padding: 1rem;
     }
-    .modal-card { width: min(600px, 100%); padding: 1.25rem; max-height: 88vh; overflow-y: auto; }
+    .modal-card { width: min(560px, 100%); padding: 1.25rem; max-height: 88vh; overflow-y: auto; }
 
     .tool-tile { padding: 1rem; display: flex; flex-direction: column; gap: 0.45rem; justify-content: space-between; }
 
@@ -345,7 +343,7 @@
   <canvas id="vector-canvas"></canvas>
 
   <div class="app-shell">
-    <!-- Top Header Ribbon (No Role Switcher) -->
+    <!-- Top Header Ribbon -->
     <header class="topbar glass">
       <div class="brand-group">
         <button class="hex-menu-btn" id="menuToggle" title="Toggle Navigation">
@@ -383,13 +381,13 @@
 
       <div class="search-box">
         <span style="opacity: 0.75;">⌕</span>
-        <input id="globalSearch" type="text" placeholder="Search real deals, leads, Gmail, Drive, contacts, staff..." />
+        <input id="globalSearch" type="text" placeholder="Search deals, leads, Gmail, Drive, contacts, staff..." />
       </div>
 
       <div class="header-actions">
-        <button class="icon-btn" id="connectBtn" title="Configure Firebase Auth, Google OAuth & Gemini 3.5 Flash-Lite">
-          <span id="cloudStatusDot" class="status-dot dot-amber"></span>
-          <span>API Setup</span>
+        <button class="icon-btn" id="aiKeyBtn" title="Set Gemini 3.5 Flash-Lite API Key">
+          <span id="aiDot" class="status-dot dot-amber"></span>
+          <span>Gemini Key</span>
         </button>
 
         <button class="icon-btn" id="themeBtn" title="Liquid Glass Themes & Dark/Light Mode">
@@ -397,7 +395,7 @@
           <span>Themes</span>
         </button>
 
-        <button class="icon-btn" id="googleAuthBtn" title="Authorize with your real Google Account">
+        <button class="icon-btn" id="googleAuthBtn" title="Sign in directly with Google">
           <svg width="18" height="18" viewBox="0 0 24 24" id="googleSvgIcon">
             <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
             <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
@@ -428,9 +426,9 @@
       </div>
       <button class="btn-secondary" id="closeAiDrawer">✕</button>
     </div>
-    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:250px;">Ready on gemini-3.5-flash-lite. Add your Gemini API key in "API Setup" to run live AI reasoning.</div>
+    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:250px;">Ready on gemini-3.5-flash-lite. Click "Gemini Key" in the top bar once to activate live AI responses.</div>
     <div style="display:flex; gap:0.45rem;">
-      <input id="aiPromptInput" type="text" placeholder="Ask AI about your real deals, emails, tasks, or data..." />
+      <input id="aiPromptInput" type="text" placeholder="Ask AI about your deals, emails, tasks, or data..." />
       <button class="btn-primary" id="aiSendBtn">Run</button>
     </div>
   </div>
@@ -441,32 +439,50 @@
   </div>
 
   <script type="module">
-    'use strict';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult,
+      setPersistence,
+      browserLocalPersistence,
+      onAuthStateChanged,
+      signOut
+    } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      push,
+      onValue
+    } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
     // =========================================================================
-    // OPTIONAL: PASTE YOUR PUBLIC FIREBASE WEB APP CONFIG HERE (OR USE "API SETUP" BUTTON)
-    // Firebase web configs are safe for client-side repos; access is secured via
-    // Firebase Authorized Domains & Firestore Security Rules.
+    // LIVE FIREBASE CONFIG (my-private-project-1307)
     // =========================================================================
-    const INLINE_FIREBASE_CONFIG = {
-      apiKey: '',
-      authDomain: '',
-      projectId: '',
-      storageBucket: '',
-      messagingSenderId: '',
-      appId: ''
+    const firebaseConfig = {
+      apiKey: "AIzaSyAZ-gfYvJk9VO8ahIDUMJffEkSI3tvTxmg",
+      authDomain: "my-private-project-1307.firebaseapp.com",
+      databaseURL: "https://my-private-project-1307-default-rtdb.firebaseio.com",
+      projectId: "my-private-project-1307",
+      storageBucket: "my-private-project-1307.firebasestorage.app",
+      messagingSenderId: "36501656008",
+      appId: "1:36501656008:web:4a16827bbd14d112a7b0fd",
+      measurementId: "G-KMFDD7JSY0"
     };
-    const INLINE_GOOGLE_OAUTH_CLIENT_ID = '';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const rtdb = getDatabase(app);
 
     const GEMINI_MODEL = 'gemini-3.5-flash-lite';
-    const FIREBASE_SDK = '10.14.1';
-    const STORAGE_KEY = 'quasar13_clean_v3';
-    const CONFIG_KEY = 'quasar13_cloud_config_v3';
+    const STORAGE_KEY = 'quasar13_prod_v4';
+    const GEMINI_KEY_STORAGE = 'quasar13_gemini_key_v4';
 
-    const GOOGLE_SCOPES = [
-      'openid',
-      'email',
-      'profile',
+    const WORKSPACE_SCOPES = [
       'https://www.googleapis.com/auth/gmail.readonly',
       'https://www.googleapis.com/auth/gmail.send',
       'https://www.googleapis.com/auth/calendar',
@@ -486,13 +502,13 @@
       { id: 'ENTERTAINMENT', label: 'Entertainment', rss: 'https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
-    // STRICTLY ZERO FICTIONAL DATA
+    // ZERO FICTIONAL DATA — Every workspace collection starts empty
     const EMPTY_STATE = {
       theme: 'ios27',
       mode: 'dark',
       activeTab: 'news',
       crmView: 'table',
-      user: null, // Populated ONLY after real Firebase or Google OAuth verification
+      user: null,
       newsPrefs: {
         categories: ['TOP', 'TECHNOLOGY', 'BUSINESS'],
         customTopics: []
@@ -510,12 +526,6 @@
       auditTrail: []
     };
 
-    const DEFAULT_CONFIG = {
-      geminiApiKey: '',
-      firebaseConfigJson: INLINE_FIREBASE_CONFIG.apiKey ? JSON.stringify(INLINE_FIREBASE_CONFIG) : '',
-      googleOAuthClientId: INLINE_GOOGLE_OAUTH_CLIENT_ID
-    };
-
     const runtime = {
       newsItems: [],
       newsLoading: false,
@@ -527,39 +537,41 @@
       contactsList: [],
       driveFiles: [],
       googleAccessToken: sessionStorage.getItem('quasar13_google_token') || '',
-      firebaseApp: null,
-      firebaseAuth: null,
-      firestoreDb: null,
-      unsubscribeChat: null
+      chatSubscribed: false
     };
 
-    function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+    const clone = (o) => JSON.parse(JSON.stringify(o));
 
-    function loadJson(key, fallback) {
+    function loadState() {
       try {
-        const raw = localStorage.getItem(key);
-        return raw ? Object.assign(clone(fallback), JSON.parse(raw)) : clone(fallback);
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? Object.assign(clone(EMPTY_STATE), JSON.parse(raw)) : clone(EMPTY_STATE);
       } catch {
-        return clone(fallback);
+        return clone(EMPTY_STATE);
       }
     }
 
-    let state = loadJson(STORAGE_KEY, EMPTY_STATE);
-    let config = loadJson(CONFIG_KEY, DEFAULT_CONFIG);
-    if (!config.firebaseConfigJson && INLINE_FIREBASE_CONFIG.apiKey) {
-      config.firebaseConfigJson = JSON.stringify(INLINE_FIREBASE_CONFIG);
-    }
-    if (!config.googleOAuthClientId && INLINE_GOOGLE_OAUTH_CLIENT_ID) {
-      config.googleOAuthClientId = INLINE_GOOGLE_OAUTH_CLIENT_ID;
-    }
+    let state = loadState();
+    let geminiApiKey = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
 
+    let syncTimer = null;
     function saveState() {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
-      syncWorkspaceToCloud();
-    }
-
-    function saveConfig() {
-      try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); } catch {}
+      if (state.user?.uid) {
+        clearTimeout(syncTimer);
+        syncTimer = setTimeout(() => {
+          set(ref(rtdb, `quasar13/workspaces/${state.user.uid}`), {
+            deals: state.deals,
+            leads: state.leads,
+            tasks: state.tasks,
+            employees: state.employees,
+            leaves: state.leaves,
+            aiMemories: state.aiMemories,
+            newsPrefs: state.newsPrefs,
+            updatedAt: Date.now()
+          }).catch(() => {});
+        }, 700);
+      }
     }
 
     function nowStamp() {
@@ -579,7 +591,7 @@
     function logAction(action, detail) {
       state.auditTrail.unshift({
         ts: nowStamp(),
-        actor: state.user ? `${state.user.name} (${state.user.email})` : 'Unauthenticated Visitor',
+        actor: state.user ? `${state.user.name} (${state.user.email})` : 'Visitor',
         action,
         detail
       });
@@ -601,15 +613,138 @@
     }
 
     // =========================================================================
-    // 1. GEMINI 3.5 FLASH-LITE ENGINE (Text + Native Multimodal)
+    // 1. DIRECT REAL GOOGLE ACCOUNT SIGN-IN (FIREBASE AUTH + PERSISTENT SESSION)
+    // =========================================================================
+    async function signInWithGoogleDirect(includeWorkspaceScopes = false) {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      if (includeWorkspaceScopes) {
+        WORKSPACE_SCOPES.forEach(s => provider.addScope(s));
+      }
+
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        const result = await signInWithPopup(auth, provider);
+        const cred = GoogleAuthProvider.credentialFromResult(result);
+        if (cred?.accessToken) {
+          runtime.googleAccessToken = cred.accessToken;
+          sessionStorage.setItem('quasar13_google_token', cred.accessToken);
+        }
+        applyFirebaseUser(result.user);
+        logAction('GOOGLE_SIGNIN', `Authorized ${result.user.email}`);
+        if (includeWorkspaceScopes && runtime.googleAccessToken) {
+          fetchAllGoogleWorkspaceData();
+        }
+      } catch (err) {
+        if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+        if (err.code === 'auth/popup-closed-by-user') return;
+        alert(
+          'Google Sign-In Error: ' + err.message +
+          '\n\nEnsure "' + window.location.hostname + '" is added under Firebase Console → Authentication → Settings → Authorized domains.'
+        );
+      }
+    }
+
+    function applyFirebaseUser(fbUser) {
+      state.user = {
+        uid: fbUser.uid,
+        name: fbUser.displayName || fbUser.email,
+        email: fbUser.email,
+        photo: fbUser.photoURL || ''
+      };
+
+      if (!state.employees.some(e => e.email === state.user.email)) {
+        state.employees.push({
+          id: 'EMP-' + String(state.employees.length + 1).padStart(3, '0'),
+          name: state.user.name,
+          email: state.user.email,
+          title: '',
+          dept: '',
+          manager: '',
+          status: 'Active'
+        });
+      }
+
+      // Hydrate user's saved cloud workspace if local is empty
+      get(ref(rtdb, `quasar13/workspaces/${fbUser.uid}`)).then(snap => {
+        if (!snap.exists()) return;
+        const d = snap.val();
+        if (Array.isArray(d.deals) && !state.deals.length) state.deals = d.deals;
+        if (Array.isArray(d.leads) && !state.leads.length) state.leads = d.leads;
+        if (Array.isArray(d.tasks) && !state.tasks.length) state.tasks = d.tasks;
+        if (Array.isArray(d.employees) && d.employees.length > state.employees.length) state.employees = d.employees;
+        if (Array.isArray(d.leaves) && !state.leaves.length) state.leaves = d.leaves;
+        if (Array.isArray(d.aiMemories) && !state.aiMemories.length) state.aiMemories = d.aiMemories;
+        if (d.newsPrefs) state.newsPrefs = d.newsPrefs;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderAll();
+      }).catch(() => {});
+
+      subscribeRealtimeChat();
+      saveState();
+      renderAll();
+    }
+
+    function subscribeRealtimeChat() {
+      if (runtime.chatSubscribed) return;
+      runtime.chatSubscribed = true;
+      onValue(ref(rtdb, 'quasar13/org_chat'), (snap) => {
+        const val = snap.val();
+        if (val) {
+          state.orgMessages = Object.values(val).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)).slice(-150);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          if (state.activeTab === 'chat') renderMainView();
+        }
+      }, () => {});
+    }
+
+    async function handleSignOut() {
+      await signOut(auth).catch(() => {});
+      logAction('GOOGLE_SIGNOUT', state.user?.email || '');
+      state.user = null;
+      runtime.googleAccessToken = '';
+      runtime.gmailMessages = [];
+      runtime.calendarEvents = [];
+      runtime.contactsList = [];
+      runtime.driveFiles = [];
+      sessionStorage.removeItem('quasar13_google_token');
+      saveState();
+      renderAll();
+    }
+
+    // Boot Auth Persistence immediately
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
+    getRedirectResult(auth).then((res) => {
+      if (res) {
+        const cred = GoogleAuthProvider.credentialFromResult(res);
+        if (cred?.accessToken) {
+          runtime.googleAccessToken = cred.accessToken;
+          sessionStorage.setItem('quasar13_google_token', cred.accessToken);
+        }
+      }
+    }).catch(() => {});
+
+    onAuthStateChanged(auth, (fbUser) => {
+      if (fbUser) {
+        applyFirebaseUser(fbUser);
+        if (runtime.googleAccessToken) fetchAllGoogleWorkspaceData();
+      }
+    });
+
+    // =========================================================================
+    // 2. GEMINI 3.5 FLASH-LITE ENGINE (Text + Native Multimodal)
     // =========================================================================
     async function callGemini35FlashLite(promptText, opts = {}) {
-      if (!config.geminiApiKey) {
-        return '⚠️ Gemini API key not configured. Click "API Setup" in the top bar and enter your Google AI Studio key to run gemini-3.5-flash-lite.';
+      if (!geminiApiKey) {
+        openGeminiKeyModal();
+        return '⚠️ Enter your Google AI Studio API Key in the popup to activate gemini-3.5-flash-lite.';
       }
 
       const memoryBlock = state.aiMemories.length
-        ? '\nOrganization AI Memory Rules:\n' + state.aiMemories.map(m => `- ${m.title}: ${m.instruction}`).join('\n')
+        ? '\nCustom Organization AI Rules:\n' + state.aiMemories.map(m => `- ${m.title}: ${m.instruction}`).join('\n')
         : '';
 
       const crmSnapshot = JSON.stringify({
@@ -630,7 +765,7 @@
 
       const sysInstruction =
         `You are QUASAR-13 Enterprise AI Copilot running on Google ${GEMINI_MODEL}. ` +
-        `Never invent fictional data, names, or financial numbers. Base every response strictly on the real workspace state below.\n` +
+        `Never invent fictional records, people, or figures. Base analysis strictly on the live workspace state below.\n` +
         `Live Workspace State: ${crmSnapshot}${memoryBlock}\n${opts.systemContext || ''}`;
 
       const userParts = [{ text: promptText }];
@@ -651,7 +786,7 @@
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'x-goog-api-key': config.geminiApiKey.trim()
+              'x-goog-api-key': geminiApiKey.trim()
             },
             body: JSON.stringify(payload)
           }
@@ -670,248 +805,11 @@
     }
 
     // =========================================================================
-    // 2. REAL FIREBASE AUTH + GOOGLE IDENTITY SERVICES (ZERO PSEUDO LOGIN)
-    // =========================================================================
-    let cloudSyncTimer = null;
-    function syncWorkspaceToCloud() {
-      if (!runtime.firestoreDb || !state.user?.uid) return;
-      clearTimeout(cloudSyncTimer);
-      cloudSyncTimer = setTimeout(async () => {
-        try {
-          const { doc, setDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
-          await setDoc(doc(runtime.firestoreDb, 'quasar13_workspaces', state.user.uid), {
-            deals: state.deals,
-            leads: state.leads,
-            tasks: state.tasks,
-            employees: state.employees,
-            leaves: state.leaves,
-            aiMemories: state.aiMemories,
-            newsPrefs: state.newsPrefs,
-            updatedAt: Date.now()
-          }, { merge: true });
-        } catch {}
-      }, 900);
-    }
-
-    async function hydrateWorkspaceFromCloud(uid) {
-      if (!runtime.firestoreDb || !uid) return;
-      try {
-        const { doc, getDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
-        const snap = await getDoc(doc(runtime.firestoreDb, 'quasar13_workspaces', uid));
-        if (snap.exists()) {
-          const d = snap.data();
-          if (Array.isArray(d.deals) && !state.deals.length) state.deals = d.deals;
-          if (Array.isArray(d.leads) && !state.leads.length) state.leads = d.leads;
-          if (Array.isArray(d.tasks) && !state.tasks.length) state.tasks = d.tasks;
-          if (Array.isArray(d.employees) && d.employees.length > state.employees.length) state.employees = d.employees;
-          if (Array.isArray(d.leaves) && !state.leaves.length) state.leaves = d.leaves;
-          if (Array.isArray(d.aiMemories) && !state.aiMemories.length) state.aiMemories = d.aiMemories;
-          if (d.newsPrefs) state.newsPrefs = d.newsPrefs;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          renderAll();
-        }
-      } catch {}
-    }
-
-    function setAuthenticatedUser(userObj) {
-      state.user = userObj;
-      if (userObj && !state.employees.some(e => e.email === userObj.email)) {
-        state.employees.push({
-          id: 'EMP-' + String(state.employees.length + 1).padStart(3, '0'),
-          name: userObj.name,
-          email: userObj.email,
-          title: '',
-          dept: '',
-          manager: '',
-          status: 'Active'
-        });
-      }
-      saveState();
-      renderAll();
-    }
-
-    async function initFirebaseIfConfigured() {
-      if (!config.firebaseConfigJson) return false;
-      try {
-        const fbConfig = JSON.parse(config.firebaseConfigJson);
-        if (!fbConfig.apiKey || !fbConfig.authDomain) return false;
-
-        const { initializeApp, getApps } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-app.js`);
-        const {
-          getAuth,
-          setPersistence,
-          browserLocalPersistence,
-          onAuthStateChanged,
-          getRedirectResult,
-          GoogleAuthProvider
-        } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
-        const {
-          getFirestore,
-          collection,
-          query,
-          orderBy,
-          limit,
-          onSnapshot
-        } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
-
-        runtime.firebaseApp = getApps().length ? getApps()[0] : initializeApp(fbConfig);
-        runtime.firebaseAuth = getAuth(runtime.firebaseApp);
-        runtime.firestoreDb = getFirestore(runtime.firebaseApp);
-
-        // Remember user across every refresh
-        await setPersistence(runtime.firebaseAuth, browserLocalPersistence);
-
-        // Handle redirect sign-in result if popup fallback was triggered on tablet/mobile
-        try {
-          const redir = await getRedirectResult(runtime.firebaseAuth);
-          if (redir) {
-            const cred = GoogleAuthProvider.credentialFromResult(redir);
-            if (cred?.accessToken) {
-              runtime.googleAccessToken = cred.accessToken;
-              sessionStorage.setItem('quasar13_google_token', cred.accessToken);
-            }
-          }
-        } catch {}
-
-        onAuthStateChanged(runtime.firebaseAuth, (fbUser) => {
-          if (fbUser) {
-            setAuthenticatedUser({
-              uid: fbUser.uid,
-              name: fbUser.displayName || fbUser.email,
-              email: fbUser.email,
-              photo: fbUser.photoURL || '',
-              provider: 'Firebase Google Auth'
-            });
-            hydrateWorkspaceFromCloud(fbUser.uid);
-
-            try {
-              if (runtime.unsubscribeChat) runtime.unsubscribeChat();
-              const q = query(collection(runtime.firestoreDb, 'quasar13_org_chat'), orderBy('createdAt', 'asc'), limit(120));
-              runtime.unsubscribeChat = onSnapshot(q, (snap) => {
-                state.orgMessages = snap.docs.map(d => d.data());
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                if (state.activeTab === 'chat') renderMainView();
-              }, () => {});
-            } catch {}
-
-            if (runtime.googleAccessToken) fetchAllGoogleWorkspaceData();
-          }
-        });
-        return true;
-      } catch (err) {
-        console.warn('Firebase init error:', err);
-        return false;
-      }
-    }
-
-    async function authorizeWithGoogle(silentHintEmail = '') {
-      // Path 1: Real Firebase GoogleAuthProvider (shows real Google Account chooser)
-      if (config.firebaseConfigJson && !silentHintEmail) {
-        try {
-          const ok = runtime.firebaseAuth ? true : await initFirebaseIfConfigured();
-          if (!ok || !runtime.firebaseAuth) throw new Error('Invalid Firebase Web Config JSON.');
-          const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
-          const provider = new GoogleAuthProvider();
-          provider.setCustomParameters({ prompt: 'select_account' });
-          GOOGLE_SCOPES.forEach(s => provider.addScope(s));
-
-          try {
-            const result = await signInWithPopup(runtime.firebaseAuth, provider);
-            const cred = GoogleAuthProvider.credentialFromResult(result);
-            if (cred?.accessToken) {
-              runtime.googleAccessToken = cred.accessToken;
-              sessionStorage.setItem('quasar13_google_token', cred.accessToken);
-            }
-            setAuthenticatedUser({
-              uid: result.user.uid,
-              name: result.user.displayName || result.user.email,
-              email: result.user.email,
-              photo: result.user.photoURL || '',
-              provider: 'Firebase Google Auth'
-            });
-            logAction('GOOGLE_AUTH_SUCCESS', `Verified ${result.user.email} via Firebase`);
-            fetchAllGoogleWorkspaceData();
-          } catch (popupErr) {
-            if (popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/operation-not-supported-in-this-environment') {
-              await signInWithRedirect(runtime.firebaseAuth, provider);
-              return;
-            }
-            throw popupErr;
-          }
-          return;
-        } catch (err) {
-          alert(
-            'Google Authorization Failed: ' + err.message +
-            '\n\nChecklist:\n1. Firebase Console → Authentication → Sign-in method → Enable Google\n2. Authentication → Settings → Authorized domains → Add your domain (e.g. karanlavate13.github.io)'
-          );
-          return;
-        }
-      }
-
-      // Path 2: Real Direct Google Identity Services OAuth2
-      if (config.googleOAuthClientId && window.google?.accounts?.oauth2) {
-        const tokenClient = window.google.accounts.oauth2.initTokenClient({
-          client_id: config.googleOAuthClientId.trim(),
-          scope: GOOGLE_SCOPES.join(' '),
-          hint: silentHintEmail || undefined,
-          prompt: silentHintEmail ? '' : 'select_account',
-          callback: async (tokenResp) => {
-            if (tokenResp.error) {
-              if (!silentHintEmail) alert('Google OAuth Error: ' + tokenResp.error);
-              return;
-            }
-            runtime.googleAccessToken = tokenResp.access_token;
-            sessionStorage.setItem('quasar13_google_token', tokenResp.access_token);
-            const profRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-              headers: { Authorization: `Bearer ${tokenResp.access_token}` }
-            });
-            const prof = await profRes.json();
-            setAuthenticatedUser({
-              uid: prof.sub,
-              name: prof.name || prof.email,
-              email: prof.email,
-              photo: prof.picture || '',
-              provider: 'Google OAuth 2.0'
-            });
-            logAction('GOOGLE_OAUTH_SUCCESS', `Verified ${prof.email}`);
-            fetchAllGoogleWorkspaceData();
-          }
-        });
-        tokenClient.requestAccessToken();
-        return;
-      }
-
-      // Never fake login: require real Firebase or Google OAuth credentials
-      if (!silentHintEmail) {
-        openConnectModal('Real Google authorization requires your Firebase Web Config JSON (from Firebase Console → Project Settings) OR a Google Cloud OAuth 2.0 Web Client ID. Paste one below—this app never uses pseudo sign-in.');
-      }
-    }
-
-    async function signOutGoogle() {
-      if (runtime.firebaseAuth) {
-        try {
-          const { signOut } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
-          await signOut(runtime.firebaseAuth);
-        } catch {}
-      }
-      logAction('GOOGLE_SIGNOUT', state.user?.email || '');
-      state.user = null;
-      runtime.googleAccessToken = '';
-      runtime.gmailMessages = [];
-      runtime.calendarEvents = [];
-      runtime.contactsList = [];
-      runtime.driveFiles = [];
-      sessionStorage.removeItem('quasar13_google_token');
-      saveState();
-      renderAll();
-    }
-
-    // =========================================================================
     // 3. LIVE GOOGLE WORKSPACE API FETCHERS (REAL DATA ONLY)
     // =========================================================================
     async function googleApiFetch(url, options = {}) {
       if (!runtime.googleAccessToken) {
-        throw new Error('Google Workspace OAuth access token is not active in this tab yet. Click your Google Account button → Re-authorize Google Workspace.');
+        throw new Error('Grant Google Workspace access (Gmail, Calendar, Drive, Contacts) to load live inbox & files.');
       }
       const res = await fetch(url, {
         ...options,
@@ -946,7 +844,7 @@
             snippet: d.snippet || ''
           };
         });
-        logAction('GMAIL_SYNC', `Fetched ${runtime.gmailMessages.length} live Gmail threads`);
+        logAction('GMAIL_SYNC', `Loaded ${runtime.gmailMessages.length} real Gmail threads`);
       } catch (err) {
         runtime.gmailError = err.message;
       } finally {
@@ -1014,7 +912,7 @@
     }
 
     // =========================================================================
-    // 4. LIVE CHRONOLOGICAL GOOGLE NEWS (ALWAYS VISIBLE — PERSONALIZABLE)
+    // 4. LIVE CHRONOLOGICAL GOOGLE NEWS (ALWAYS ACCESSIBLE + PERSONALIZABLE)
     // =========================================================================
     async function fetchRssFeed(rssUrl, categoryLabel) {
       try {
@@ -1088,7 +986,7 @@
     }
 
     // =========================================================================
-    // 5. NAVIGATION & MODULE VIEWS (NO ROLE GATING, ZERO FICTIONAL DATA)
+    // 5. NAVIGATION & MODULE VIEWS (ZERO FICTIONAL DATA, NO ROLE BUTTON)
     // =========================================================================
     const NAV_ITEMS = [
       { id: 'news', label: 'Google News Feed' },
@@ -1336,34 +1234,38 @@
           <div class="section-header">
             <div>
               <div class="section-title">Live Gmail Inbox Preview + AI Deal & File Extractor</div>
-              <div class="muted">${state.user ? `Authorized account: ${esc(state.user.email)}` : 'Sign in with your Google Account to load your real Gmail inbox'}</div>
+              <div class="muted">${state.user ? `Signed in as ${esc(state.user.email)}` : 'Sign in with your Google Account to load your real Gmail inbox'}</div>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-              ${state.user ? `<button class="btn-primary" id="syncGmailBtn">↻ Sync Live Gmail</button>` : `<button class="btn-primary" id="gmailSignInBtn">Sign in with Google</button>`}
+              ${state.user
+                ? (runtime.googleAccessToken
+                    ? `<button class="btn-primary" id="syncGmailBtn">↻ Refresh Inbox</button>`
+                    : `<button class="btn-primary" id="grantWorkspaceBtn">Connect Gmail & Workspace</button>`)
+                : `<button class="btn-primary" id="gmailSignInBtn">Sign in with Google</button>`}
               <button class="btn-secondary" id="composeGmailBtn">✉ Compose & Send</button>
               <a class="btn-secondary" href="https://mail.google.com" target="_blank" rel="noopener noreferrer">Open Full Gmail ↗</a>
             </div>
           </div>
 
           ${runtime.gmailLoading ? `
-            <div class="empty-state">Syncing real Gmail threads...</div>
+            <div class="empty-state">Loading your real Gmail threads...</div>
           ` : runtime.gmailError ? `
             <div class="empty-state">
-              <div class="section-title">Gmail Authorization Required</div>
+              <div class="section-title">Gmail Scope Authorization</div>
               <p class="muted" style="margin:0.5rem 0;">${esc(runtime.gmailError)}</p>
-              <button class="btn-primary" id="reauthGmailBtn">Authorize Google Workspace Access</button>
+              <button class="btn-primary" id="grantWorkspaceBtn2">Authorize Gmail & Workspace Access</button>
             </div>
           ` : !state.user ? `
             <div class="empty-state">
-              <div class="section-title">Authorize Your Google Account</div>
-              <p class="muted" style="margin:0.45rem 0 0.9rem;">Sign in once with Google/Firebase—QUASAR-13 remembers your account across page refreshes.</p>
+              <div class="section-title">Sign in with Google</div>
+              <p class="muted" style="margin:0.45rem 0 0.9rem;">Select your Google account once—your login stays remembered across every page refresh.</p>
               <button class="btn-primary" id="gmailSignInBtn2">Sign in with Google</button>
             </div>
           ` : !runtime.gmailMessages.length ? `
             <div class="empty-state">
-              <div class="section-title">Gmail Connected (${esc(state.user.email)})</div>
-              <p class="muted" style="margin:0.45rem 0 0.9rem;">Click below to fetch your latest real Gmail threads.</p>
-              <button class="btn-primary" id="reauthGmailBtn2">Sync / Authorize Live Gmail</button>
+              <div class="section-title">Signed in as ${esc(state.user.email)}</div>
+              <p class="muted" style="margin:0.45rem 0 0.9rem;">Click below to grant Gmail, Calendar, Drive, and Contacts permissions and load your live inbox.</p>
+              <button class="btn-primary" id="grantWorkspaceBtn3">Connect Live Gmail & Workspace</button>
             </div>
           ` : runtime.gmailMessages.map(em => `
             <div class="glass panel" style="margin-bottom:0.75rem;">
@@ -1394,7 +1296,7 @@
             <div class="section-header">
               <div>
                 <div class="section-title">Organization Real-Time Chat</div>
-                <div class="muted">${runtime.firestoreDb ? '🟢 Cloud Firestore Live Sync Active' : 'Connect Firebase in API Setup for multi-user real-time sync'}</div>
+                <div class="muted">🟢 Live Firebase Realtime Database Sync</div>
               </div>
               <a class="btn-secondary" href="https://chat.google.com" target="_blank" rel="noopener noreferrer">Google Chat ↗</a>
             </div>
@@ -1411,7 +1313,7 @@
               `).join('')}
             </div>
             <div style="display:flex; gap:0.5rem;">
-              <input id="orgChatInput" type="text" placeholder="${state.user ? 'Message your organization...' : 'Sign in with Google to chat with your verified identity...'}" />
+              <input id="orgChatInput" type="text" placeholder="${state.user ? 'Message your organization...' : 'Sign in with Google to chat...'}" />
               <button class="btn-primary" id="sendOrgChatBtn">Send</button>
             </div>
           </div>
@@ -1420,12 +1322,12 @@
             <div class="section-header">
               <div>
                 <div class="section-title">End-to-End Encrypted Chat (AES-256-GCM)</div>
-                <div class="muted">Native WebCrypto PBKDF2 + AES-256-GCM encryption in-browser</div>
+                <div class="muted">Native WebCrypto PBKDF2 + AES-256-GCM in-browser encryption</div>
               </div>
               <span class="pill-tag">🔒 E2EE</span>
             </div>
             <div style="margin-bottom:0.6rem;">
-              <input id="e2ePassphrase" type="password" placeholder="Enter your shared room passphrase to encrypt messages..." />
+              <input id="e2ePassphrase" type="password" placeholder="Enter your shared room passphrase..." />
             </div>
             <div style="max-height:265px; overflow-y:auto; margin-bottom:0.75rem;">
               ${!state.encryptedMessages.length ? `
@@ -1454,7 +1356,11 @@
               <div class="section-title">Complete Google Organization Suite</div>
               <div class="muted">Meet, Calendar, Contacts, Drive, Translate, Docs, Sheets, Slides, Keep, Forms, Tasks & Looker Studio</div>
             </div>
-            ${state.user ? `<button class="btn-primary" id="syncWorkspaceBtn">↻ Sync Live Calendar, Drive & Contacts</button>` : `<button class="btn-primary" id="wsSignInBtn">Sign in with Google</button>`}
+            ${state.user
+              ? (runtime.googleAccessToken
+                  ? `<button class="btn-primary" id="syncWorkspaceBtn">↻ Sync Calendar, Drive & Contacts</button>`
+                  : `<button class="btn-primary" id="wsGrantBtn">Connect Live Calendar, Drive & Contacts</button>`)
+              : `<button class="btn-primary" id="wsSignInBtn">Sign in with Google</button>`}
           </div>
           <div class="grid-4">
             <div class="glass tool-tile"><strong>Google Meet</strong><div class="muted">Instant video meetings</div><a class="btn-primary" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer">Start Meet ↗</a></div>
@@ -1501,7 +1407,7 @@
         <div class="grid-3">
           <div class="glass panel">
             <div class="section-title" style="margin-bottom:0.6rem;">Live Calendar Events</div>
-            ${!runtime.calendarEvents.length ? `<div class="muted">No synced events yet. Sign in & click Sync above.</div>` : runtime.calendarEvents.map(ev => `
+            ${!runtime.calendarEvents.length ? `<div class="muted">No synced events yet. Connect Live Workspace above.</div>` : runtime.calendarEvents.map(ev => `
               <div class="glass panel" style="padding:0.65rem; margin-bottom:0.45rem;">
                 <strong>${esc(ev.summary || '(No Title)')}</strong>
                 <div class="muted" style="font-size:0.76rem;">${esc(ev.start?.dateTime || ev.start?.date || '')}</div>
@@ -1768,7 +1674,7 @@
         </div>
         <div style="margin-bottom:0.45rem;"><strong>Custom Topics / Keywords</strong></div>
         <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
-          <input id="customTopicInput" type="text" placeholder="Add any topic or industry keyword..." />
+          <input id="customTopicInput" type="text" placeholder="Add any topic or keyword..." />
           <button class="btn-primary" id="addCustomTopicBtn">Add</button>
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;">
@@ -1810,68 +1716,33 @@
       };
     }
 
-    function openConnectModal(notice = '') {
+    function openGeminiKeyModal() {
       const modal = document.getElementById('modalBackdrop');
       const content = document.getElementById('modalContent');
       modal.style.display = 'grid';
       content.innerHTML = `
         <div class="section-header">
-          <div class="section-title">Real Google Auth, Firebase & Gemini 3.5 Flash-Lite Setup</div>
+          <div class="section-title">Gemini 3.5 Flash-Lite API Key</div>
           <button class="btn-secondary" id="closeModalBtn">✕</button>
         </div>
-        ${notice ? `<div class="glass panel" style="padding:0.75rem; margin-bottom:0.85rem; border-color:var(--s-300); font-size:0.83rem;">${esc(notice)}</div>` : ''}
-        <div style="display:flex; flex-direction:column; gap:0.85rem;">
-          <div>
-            <label style="font-size:0.82rem; font-weight:600;">1. Firebase Web Config JSON (for Real Google Account Sign-In + Persistent Login + Firestore Sync)</label>
-            <textarea id="cfgFirebaseJson" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}' style="margin-top:0.3rem; font-family:var(--font-mono); font-size:0.78rem;">${esc(config.firebaseConfigJson)}</textarea>
-          </div>
-          <div>
-            <label style="font-size:0.82rem; font-weight:600;">2. OR Direct Google Cloud OAuth 2.0 Web Client ID</label>
-            <input id="cfgOAuthClient" type="text" value="${esc(config.googleOAuthClientId)}" placeholder="1234567890-xxxx.apps.googleusercontent.com" style="margin-top:0.3rem;" />
-          </div>
-          <div>
-            <label style="font-size:0.82rem; font-weight:600;">3. Google AI Studio API Key (for <code>gemini-3.5-flash-lite</code>)</label>
-            <input id="cfgGeminiKey" type="password" value="${esc(config.geminiApiKey)}" placeholder="AIzaSy..." style="margin-top:0.3rem;" />
-          </div>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <button class="btn-primary" id="saveAndSignInBtn" style="flex:1;">Save & Sign in with Google</button>
-            <button class="btn-secondary" id="saveCloudConfigBtn">Save Only</button>
-            <button class="btn-secondary" id="clearCloudConfigBtn">Clear</button>
-          </div>
-          <div class="muted" style="font-size:0.75rem;">Tip: You can also paste your Firebase config once into <code>INLINE_FIREBASE_CONFIG</code> inside <code>index.html</code> so every visitor can click "Sign in with Google" immediately.</div>
+        <div class="muted" style="margin-bottom:0.75rem;">Stored only in your browser so your public GitHub repository stays safe from key revocation.</div>
+        <input id="geminiKeyField" type="password" value="${esc(geminiApiKey)}" placeholder="Paste your Google AI Studio API Key (AIzaSy...)" style="margin-bottom:0.85rem;" />
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn-primary" id="saveGeminiKeyBtn" style="flex:1;">Save Key</button>
+          <button class="btn-secondary" id="clearGeminiKeyBtn">Remove</button>
         </div>
       `;
-
-      const persistFields = async () => {
-        const fbRaw = document.getElementById('cfgFirebaseJson').value.trim();
-        if (fbRaw) {
-          try { JSON.parse(fbRaw); }
-          catch { alert('Firebase Config must be valid JSON (use double quotes around keys like "apiKey").'); return false; }
-        }
-        config.firebaseConfigJson = fbRaw;
-        config.googleOAuthClientId = document.getElementById('cfgOAuthClient').value.trim();
-        config.geminiApiKey = document.getElementById('cfgGeminiKey').value.trim();
-        saveConfig();
-        await initFirebaseIfConfigured();
-        updateCloudIndicator();
-        logAction('API_SETUP_SAVED', 'Saved Auth/AI configuration');
-        return true;
-      };
-
       document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
-      document.getElementById('saveCloudConfigBtn').onclick = async () => {
-        if (await persistFields()) modal.style.display = 'none';
+      document.getElementById('saveGeminiKeyBtn').onclick = () => {
+        geminiApiKey = document.getElementById('geminiKeyField').value.trim();
+        localStorage.setItem(GEMINI_KEY_STORAGE, geminiApiKey);
+        updateAiIndicator();
+        modal.style.display = 'none';
       };
-      document.getElementById('saveAndSignInBtn').onclick = async () => {
-        if (await persistFields()) {
-          modal.style.display = 'none';
-          authorizeWithGoogle();
-        }
-      };
-      document.getElementById('clearCloudConfigBtn').onclick = () => {
-        config = { geminiApiKey: '', firebaseConfigJson: '', googleOAuthClientId: '' };
-        saveConfig();
-        updateCloudIndicator();
+      document.getElementById('clearGeminiKeyBtn').onclick = () => {
+        geminiApiKey = '';
+        localStorage.removeItem(GEMINI_KEY_STORAGE);
+        updateAiIndicator();
         modal.style.display = 'none';
       };
     }
@@ -1882,7 +1753,7 @@
       modal.style.display = 'grid';
       content.innerHTML = `
         <div class="section-header">
-          <div class="section-title">Authorized Google Account</div>
+          <div class="section-title">Signed-In Google Account</div>
           <button class="btn-secondary" id="closeModalBtn">✕</button>
         </div>
         <div class="glass panel" style="margin-bottom:0.85rem; display:flex; align-items:center; gap:0.85rem;">
@@ -1890,17 +1761,19 @@
           <div>
             <strong>${esc(state.user.name)}</strong>
             <div class="muted">${esc(state.user.email)}</div>
-            <div class="muted" style="font-size:0.74rem;">${esc(state.user.provider)} • Persisted across refreshes</div>
+            <div class="muted" style="font-size:0.74rem;">Firebase Google Auth • Persisted across refreshes</div>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
-          <button class="btn-primary" id="switchAccountBtn">Switch Google Account / Refresh Workspace Token</button>
+          <button class="btn-primary" id="connectWsScopesBtn">Grant / Refresh Gmail, Calendar, Drive & Contacts</button>
+          <button class="btn-secondary" id="switchGoogleBtn">Switch Google Account</button>
           <button class="btn-secondary" id="signOutBtn">Sign Out</button>
         </div>
       `;
       document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
-      document.getElementById('switchAccountBtn').onclick = () => { modal.style.display = 'none'; authorizeWithGoogle(); };
-      document.getElementById('signOutBtn').onclick = () => { modal.style.display = 'none'; signOutGoogle(); };
+      document.getElementById('connectWsScopesBtn').onclick = () => { modal.style.display = 'none'; signInWithGoogleDirect(true); };
+      document.getElementById('switchGoogleBtn').onclick = () => { modal.style.display = 'none'; signInWithGoogleDirect(false); };
+      document.getElementById('signOutBtn').onclick = () => { modal.style.display = 'none'; handleSignOut(); };
     }
 
     function bindDynamicEvents() {
@@ -2108,10 +1981,14 @@
         };
       });
 
-      // Gmail
-      ['gmailSignInBtn', 'gmailSignInBtn2', 'reauthGmailBtn', 'reauthGmailBtn2', 'wsSignInBtn'].forEach(id => {
+      // Gmail & Workspace Auth Triggers
+      ['gmailSignInBtn', 'gmailSignInBtn2', 'wsSignInBtn'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.onclick = () => authorizeWithGoogle();
+        if (el) el.onclick = () => signInWithGoogleDirect(false);
+      });
+      ['grantWorkspaceBtn', 'grantWorkspaceBtn2', 'grantWorkspaceBtn3', 'wsGrantBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = () => signInWithGoogleDirect(true);
       });
       const syncGmailBtn = document.getElementById('syncGmailBtn');
       if (syncGmailBtn) syncGmailBtn.onclick = fetchGmailInbox;
@@ -2185,7 +2062,7 @@
           const text = inp?.value.trim();
           if (!text) return;
           if (!state.user) {
-            alert('Please sign in with your Google Account first to send messages.');
+            signInWithGoogleDirect(false);
             return;
           }
           const msg = {
@@ -2194,14 +2071,9 @@
             text,
             createdAt: Date.now()
           };
-          if (runtime.firestoreDb) {
-            try {
-              const { collection, addDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
-              await addDoc(collection(runtime.firestoreDb, 'quasar13_org_chat'), msg);
-            } catch {
-              state.orgMessages.push(msg);
-            }
-          } else {
+          try {
+            await push(ref(rtdb, 'quasar13/org_chat'), msg);
+          } catch {
             state.orgMessages.push(msg);
           }
           inp.value = '';
@@ -2218,7 +2090,7 @@
           const text = inp?.value.trim();
           if (!text) return;
           if (!pass) { alert('Enter a room passphrase first to encrypt with AES-256-GCM.'); return; }
-          if (!state.user) { alert('Sign in with your Google Account first.'); return; }
+          if (!state.user) { signInWithGoogleDirect(false); return; }
           const enc = new TextEncoder();
           const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
           const salt = crypto.getRandomValues(new Uint8Array(12));
@@ -2362,7 +2234,7 @@
       const reqLeave = document.getElementById('requestLeaveBtn');
       if (reqLeave) {
         reqLeave.onclick = () => {
-          if (!state.user) { alert('Sign in with your Google Account first.'); return; }
+          if (!state.user) { signInWithGoogleDirect(false); return; }
           const dates = prompt('Leave Dates (e.g., YYYY-MM-DD to YYYY-MM-DD):');
           if (!dates || !dates.trim()) return;
           const type = (prompt('Leave Type:') || 'Leave').trim();
@@ -2441,10 +2313,9 @@
       });
     }
 
-    function updateCloudIndicator() {
-      const dot = document.getElementById('cloudStatusDot');
-      const ready = Boolean(config.firebaseConfigJson || config.googleOAuthClientId);
-      dot.className = 'status-dot ' + (ready ? 'dot-green' : 'dot-amber');
+    function updateAiIndicator() {
+      const dot = document.getElementById('aiDot');
+      dot.className = 'status-dot ' + (geminiApiKey ? 'dot-green' : 'dot-amber');
     }
 
     function renderAll() {
@@ -2471,16 +2342,16 @@
         authLabel.textContent = 'Sign in with Google';
       }
 
-      updateCloudIndicator();
+      updateAiIndicator();
       renderSidebar();
       renderMainView();
       saveState();
     }
 
-    // Static header bindings
+    // Static header bindings — Sign in button launches real Google account picker IMMEDIATELY
     document.getElementById('menuToggle').onclick = () => document.getElementById('sidebarNav').classList.toggle('collapsed');
-    document.getElementById('connectBtn').onclick = () => openConnectModal();
-    document.getElementById('googleAuthBtn').onclick = () => state.user ? openAccountModal() : authorizeWithGoogle();
+    document.getElementById('aiKeyBtn').onclick = openGeminiKeyModal;
+    document.getElementById('googleAuthBtn').onclick = () => state.user ? openAccountModal() : signInWithGoogleDirect(false);
 
     document.getElementById('themeBtn').onclick = () => {
       const modal = document.getElementById('modalBackdrop');
@@ -2608,13 +2479,6 @@
     initVectorCanvas();
     renderAll();
     loadLiveNews();
-    initFirebaseIfConfigured().then(() => {
-      if (state.user && runtime.googleAccessToken) {
-        fetchAllGoogleWorkspaceData();
-      } else if (state.user && config.googleOAuthClientId) {
-        setTimeout(() => authorizeWithGoogle(state.user.email), 1200);
-      }
-    });
   </script>
 </body>
 </html>
