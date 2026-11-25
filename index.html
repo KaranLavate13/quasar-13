@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QUASAR-9 | Enterprise AI CRM & Google Workspace OS</title>
+  <title>QUASAR-13 | Enterprise AI CRM & Google Workspace OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
+  <!-- Google Identity Services (Direct OAuth2 option) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -22,23 +24,16 @@
       --bg-canvas: #040712;
 
       /* 10-Shade Spectrum (iOS 27 Dark Default) */
-      --s-50: #e0f2fe;
-      --s-100: #bae6fd;
-      --s-200: #7dd3fc;
-      --s-300: #38bdf8;
-      --s-400: #0ea5e9;
-      --s-500: #0a84ff;
-      --s-600: #0284c7;
-      --s-700: #0369a1;
-      --s-800: #075985;
-      --s-900: #030816;
+      --s-50: #e0f2fe; --s-100: #bae6fd; --s-200: #7dd3fc; --s-300: #38bdf8;
+      --s-400: #0ea5e9; --s-500: #0a84ff; --s-600: #0284c7; --s-700: #0369a1;
+      --s-800: #075985; --s-900: #030816;
     }
 
     html[data-mode='light'] {
       --text-primary: #0f172a;
-      --text-secondary: rgba(15, 23, 42, 0.8);
+      --text-secondary: rgba(15, 23, 42, 0.78);
       --border-subtle: rgba(15, 23, 42, 0.16);
-      --highlight-rim: rgba(255, 255, 255, 0.75);
+      --highlight-rim: rgba(255, 255, 255, 0.78);
       --bg-canvas: #eef4fc;
     }
 
@@ -70,11 +65,7 @@
       --s-800: #115e59; --s-900: #021412;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       min-height: 100%;
@@ -127,10 +118,7 @@
       transition: transform 0.16s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
-    .glass-pill:hover {
-      transform: translateY(-1px);
-      border-color: var(--s-300);
-    }
+    .glass-pill:hover { transform: translateY(-1px); border-color: var(--s-300); }
 
     .glass-pill.active {
       background: linear-gradient(
@@ -146,20 +134,14 @@
       font-weight: 700;
     }
 
-    .app-shell {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    .app-shell { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
     header.topbar {
       position: sticky;
       top: 0.75rem;
       z-index: 40;
       margin: 0.75rem auto 0;
-      width: min(1440px, calc(100% - 1.5rem));
+      width: min(1480px, calc(100% - 1.5rem));
       padding: 0.65rem 1rem;
       display: flex;
       align-items: center;
@@ -168,17 +150,10 @@
       flex-wrap: wrap;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    .brand-group { display: flex; align-items: center; gap: 0.75rem; }
 
     .hex-menu-btn {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
+      width: 42px; height: 42px; display: grid; place-items: center;
       border-radius: 0.9rem;
       background: color-mix(in srgb, var(--s-500) 8%, transparent);
       backdrop-filter: blur(5px);
@@ -187,42 +162,22 @@
       cursor: pointer;
     }
 
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
+    .logo-wrap { display: flex; align-items: center; gap: 0.6rem; }
 
     .brand-title {
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      font-size: 1.05rem;
+      font-weight: 800; letter-spacing: 0.06em; font-size: 1.05rem;
       background: linear-gradient(90deg, var(--s-50), var(--s-300), var(--s-500), var(--s-200));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    @keyframes blackholeOrbit {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .orbit-group {
-      transform-origin: 24px 24px;
-      animation: blackholeOrbit 5.5s linear infinite;
-    }
+    @keyframes blackholeOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .orbit-group { transform-origin: 24px 24px; animation: blackholeOrbit 5.5s linear infinite; }
 
     .search-box {
-      flex: 1 1 220px;
-      max-width: 380px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.45rem 0.85rem;
-      border-radius: 9999px;
+      flex: 1 1 220px; max-width: 420px; display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.85rem; border-radius: 9999px;
       background: color-mix(in srgb, var(--s-600) 8%, transparent);
-      backdrop-filter: blur(5px);
-      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(5px); border: 1px solid var(--border-subtle);
     }
 
     input, select, textarea {
@@ -234,304 +189,155 @@
       border-radius: 0.75rem;
       padding: 0.55rem 0.75rem;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       outline: none;
     }
 
-    select option {
-      background: #0f172a;
-      color: #f8fafc;
-    }
+    select option { background: #0f172a; color: #f8fafc; }
+    .search-box input { background: transparent; border: none; padding: 0.15rem 0.25rem; }
 
-    .search-box input {
-      background: transparent;
-      border: none;
-      padding: 0.15rem 0.25rem;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
     .icon-btn {
-      position: relative;
-      height: 38px;
-      min-width: 38px;
-      padding: 0 0.7rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
+      position: relative; height: 38px; min-width: 38px; padding: 0 0.8rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
       border-radius: 9999px;
       background: color-mix(in srgb, var(--s-400) 8%, transparent);
-      backdrop-filter: blur(5px);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
+      backdrop-filter: blur(5px); border: 1px solid var(--border-subtle);
+      color: var(--text-primary); cursor: pointer; font-size: 0.82rem; font-weight: 600;
     }
 
-    .badge-dot {
-      position: absolute;
-      top: 4px;
-      right: 5px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--s-300);
-      box-shadow: 0 0 8px var(--s-400);
-    }
+    .avatar-img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1px solid var(--s-200); }
 
     .workspace {
-      width: min(1440px, calc(100% - 1.5rem));
+      width: min(1480px, calc(100% - 1.5rem));
       margin: 1rem auto 3rem;
       display: grid;
-      grid-template-columns: 245px minmax(0, 1fr);
+      grid-template-columns: 260px minmax(0, 1fr);
       gap: 1rem;
       align-items: start;
     }
 
     nav.sidebar {
-      position: sticky;
-      top: 5.2rem;
-      padding: 0.85rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
+      position: sticky; top: 5.2rem; padding: 0.85rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
     }
-
-    nav.sidebar.collapsed {
-      display: none;
-    }
+    nav.sidebar.collapsed { display: none; }
 
     .nav-item {
-      width: 100%;
-      text-align: left;
-      padding: 0.62rem 0.95rem;
-      font-size: 0.88rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      width: 100%; text-align: left; padding: 0.62rem 0.95rem;
+      font-size: 0.86rem; display: flex; align-items: center; justify-content: space-between;
     }
 
-    .content-area {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      min-width: 0;
-    }
-
-    .panel {
-      padding: 1.25rem;
-    }
+    .content-area { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+    .panel { padding: 1.25rem; }
 
     .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;
     }
+    .section-title { font-size: 1.15rem; font-weight: 700; }
+    .muted { color: var(--text-secondary); font-size: 0.85rem; }
 
-    .section-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-
-    .muted {
-      color: var(--text-secondary);
-      font-size: 0.86rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; }
 
     .btn-primary {
-      padding: 0.55rem 1rem;
-      border-radius: 9999px;
-      border: 1px solid var(--s-200);
-      background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--s-400) 14%, transparent),
-        color-mix(in srgb, var(--s-600) 10%, transparent)
-      );
-      backdrop-filter: blur(5px);
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      box-shadow: 0 0 14px color-mix(in srgb, var(--s-500) 35%, transparent);
+      padding: 0.55rem 1rem; border-radius: 9999px; border: 1px solid var(--s-200);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--s-400) 16%, transparent), color-mix(in srgb, var(--s-600) 12%, transparent));
+      backdrop-filter: blur(5px); color: var(--text-primary); font-weight: 600; font-size: 0.84rem;
+      cursor: pointer; box-shadow: 0 0 14px color-mix(in srgb, var(--s-500) 35%, transparent);
+      text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
     }
 
     .btn-secondary {
-      padding: 0.5rem 0.9rem;
-      border-radius: 9999px;
-      border: 1px solid var(--border-subtle);
+      padding: 0.48rem 0.9rem; border-radius: 9999px; border: 1px solid var(--border-subtle);
       background: color-mix(in srgb, var(--s-500) 8%, transparent);
-      backdrop-filter: blur(5px);
-      color: var(--text-primary);
-      font-weight: 500;
-      font-size: 0.84rem;
-      cursor: pointer;
+      backdrop-filter: blur(5px); color: var(--text-primary); font-weight: 500; font-size: 0.83rem;
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
     }
 
-    .news-card {
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      padding: 1rem;
+    .empty-state {
+      text-align: center; padding: 2rem 1.25rem;
+      border: 1px dashed var(--border-subtle); border-radius: var(--radius-card);
     }
 
-    .news-img {
-      width: 100%;
-      height: 205px;
-      object-fit: cover;
-      border-radius: calc(var(--radius-card) - 0.35rem);
-      border: 1px solid var(--border-subtle);
+    .kpi-card { padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+    .kpi-val { font-size: 1.5rem; font-weight: 800; color: var(--s-100); }
+
+    .funnel-bar-bg {
+      width: 100%; height: 10px; border-radius: 9999px;
+      background: color-mix(in srgb, var(--s-800) 40%, transparent);
+      overflow: hidden; margin-top: 0.35rem;
+    }
+    .funnel-bar-fill {
+      height: 100%; border-radius: 9999px;
+      background: linear-gradient(90deg, var(--s-400), var(--s-200));
+      transition: width 0.35s ease;
     }
 
-    .news-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding-top: 0.4rem;
-      border-top: 1px solid var(--border-subtle);
-    }
+    .news-card { overflow: hidden; display: flex; flex-direction: column; gap: 0.65rem; padding: 1rem; }
+    .news-card a { color: var(--text-primary); text-decoration: none; }
+    .news-card a:hover { color: var(--s-200); text-decoration: underline; }
+    .news-actions { display: flex; align-items: center; gap: 0.45rem; padding-top: 0.45rem; border-top: 1px solid var(--border-subtle); flex-wrap: wrap; }
 
-    .table-wrap {
-      overflow-x: auto;
-      border-radius: 0.9rem;
-      border: 1px solid var(--border-subtle);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.86rem;
-    }
-
-    th, td {
-      padding: 0.65rem 0.8rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    th {
-      color: var(--s-200);
-      font-weight: 600;
-      background: color-mix(in srgb, var(--s-700) 8%, transparent);
-    }
+    .table-wrap { overflow-x: auto; border-radius: 0.9rem; border: 1px solid var(--border-subtle); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { padding: 0.65rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+    th { color: var(--s-200); font-weight: 600; background: color-mix(in srgb, var(--s-700) 8%, transparent); }
 
     .terminal-box {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      padding: 0.9rem;
-      border-radius: 0.9rem;
-      background: color-mix(in srgb, var(--s-900) 20%, transparent);
-      backdrop-filter: blur(5px);
-      border: 1px solid var(--s-400);
-      white-space: pre-wrap;
-      max-height: 290px;
-      overflow-y: auto;
-    }
-
-    .fab-ai {
-      position: fixed;
-      right: 1.35rem;
-      bottom: 1.35rem;
-      z-index: 60;
-      width: 58px;
-      height: 58px;
-      border-radius: 9999px;
-      border: 1px solid var(--s-200);
-      background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--s-400) 16%, transparent),
-        color-mix(in srgb, var(--s-600) 12%, transparent)
-      );
-      backdrop-filter: blur(5px);
-      color: var(--text-primary);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 24px color-mix(in srgb, var(--s-500) 65%, transparent);
-      font-weight: 800;
-    }
-
-    .drawer {
-      position: fixed;
-      right: 1.35rem;
-      bottom: 5.5rem;
-      z-index: 60;
-      width: min(410px, calc(100vw - 2rem));
-      max-height: 74vh;
-      overflow-y: auto;
-      padding: 1.1rem;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 70;
-      background: rgba(2, 6, 23, 0.45);
-      backdrop-filter: blur(5px);
-      display: grid;
-      place-items: center;
-      padding: 1rem;
-    }
-
-    .modal-card {
-      width: min(520px, 100%);
-      padding: 1.25rem;
-      max-height: 85vh;
-      overflow-y: auto;
+      font-family: var(--font-mono); font-size: 0.81rem; padding: 0.9rem;
+      border-radius: 0.9rem; background: color-mix(in srgb, var(--s-900) 24%, transparent);
+      backdrop-filter: blur(5px); border: 1px solid var(--s-400);
+      white-space: pre-wrap; max-height: 300px; overflow-y: auto; line-height: 1.48;
     }
 
     .pill-tag {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.74rem;
-      border: 1px solid var(--s-300);
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px;
+      font-size: 0.74rem; border: 1px solid var(--s-300);
       background: color-mix(in srgb, var(--s-500) 8%, transparent);
     }
 
-    .tree-node {
-      padding: 0.7rem 0.9rem;
-      margin-bottom: 0.5rem;
-      border-left: 3px solid var(--s-400);
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.3rem; }
+    .dot-green { background: #34d399; box-shadow: 0 0 8px #34d399; }
+    .dot-amber { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+
+    .fab-ai {
+      position: fixed; right: 1.35rem; bottom: 1.35rem; z-index: 60;
+      width: 58px; height: 58px; border-radius: 9999px; border: 1px solid var(--s-200);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--s-400) 18%, transparent), color-mix(in srgb, var(--s-600) 14%, transparent));
+      backdrop-filter: blur(5px); color: var(--text-primary); cursor: pointer;
+      display: grid; place-items: center;
+      box-shadow: 0 0 24px color-mix(in srgb, var(--s-500) 65%, transparent);
+      font-weight: 800; font-size: 0.9rem;
     }
 
+    .drawer {
+      position: fixed; right: 1.35rem; bottom: 5.5rem; z-index: 60;
+      width: min(440px, calc(100vw - 2rem)); max-height: 76vh; overflow-y: auto; padding: 1.1rem;
+    }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 70; background: rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(5px); display: grid; place-items: center; padding: 1rem;
+    }
+    .modal-card { width: min(600px, 100%); padding: 1.25rem; max-height: 88vh; overflow-y: auto; }
+
+    .tool-tile { padding: 1rem; display: flex; flex-direction: column; gap: 0.45rem; justify-content: space-between; }
+
+    .kanban-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+    .kanban-col { padding: 0.75rem; min-height: 165px; }
+
+    @media (max-width: 1080px) {
+      .grid-4, .kanban-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     @media (max-width: 960px) {
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-      nav.sidebar {
-        position: static;
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-      .nav-item {
-        width: auto;
-      }
-      .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
-      }
+      .workspace { grid-template-columns: 1fr; }
+      nav.sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
+      .nav-item { width: auto; }
+      .grid-2, .grid-3, .grid-4, .kanban-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -539,10 +345,9 @@
   <canvas id="vector-canvas"></canvas>
 
   <div class="app-shell">
-    <!-- Top Header Ribbon -->
+    <!-- Top Header Ribbon (No Role Switcher) -->
     <header class="topbar glass">
       <div class="brand-group">
-        <!-- Custom Sci-Fi Hexagonal Menu Trigger -->
         <button class="hex-menu-btn" id="menuToggle" title="Toggle Navigation">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2" />
@@ -553,7 +358,6 @@
           </svg>
         </button>
 
-        <!-- Animated Blackhole + Orbiting Planet Logo -->
         <div class="logo-wrap">
           <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
             <defs>
@@ -571,78 +375,62 @@
             </g>
           </svg>
           <div>
-            <div class="brand-title">QUASAR-9</div>
-            <div class="muted" style="font-size: 0.7rem;">LIQUID GLASS AI OS</div>
+            <div class="brand-title">QUASAR-13</div>
+            <div class="muted" style="font-size: 0.7rem;">ENTERPRISE AI CRM • GEMINI 3.5 FLASH-LITE</div>
           </div>
         </div>
       </div>
 
-      <!-- MS Teams-style Global Directory Search -->
       <div class="search-box">
         <span style="opacity: 0.75;">⌕</span>
-        <input id="globalSearch" type="text" placeholder="Search people, roles, departments, or CRM tools..." />
+        <input id="globalSearch" type="text" placeholder="Search real deals, leads, Gmail, Drive, contacts, staff..." />
       </div>
 
-      <!-- Role Switcher, Alerts, Appearance, Gmail OAuth -->
       <div class="header-actions">
-        <select id="roleSelect" style="width: auto; border-radius: 9999px; padding: 0.42rem 0.75rem;" title="Active RBAC Role">
-          <option value="Owner">Role: Owner</option>
-          <option value="Director">Role: Director</option>
-          <option value="Manager">Role: Manager</option>
-          <option value="Admin">Role: Admin</option>
-          <option value="Developer">Role: Developer</option>
-          <option value="Agent">Role: Agent / Associate</option>
-        </select>
-
-        <button class="icon-btn" id="notifBtn" title="Notifications & Alerts">
-          <span>🔔</span>
-          <span id="notifCount">3</span>
-          <span class="badge-dot"></span>
+        <button class="icon-btn" id="connectBtn" title="Configure Firebase Auth, Google OAuth & Gemini 3.5 Flash-Lite">
+          <span id="cloudStatusDot" class="status-dot dot-amber"></span>
+          <span>API Setup</span>
         </button>
 
-        <button class="icon-btn" id="themeBtn" title="Themes & Light/Dark Mode">
+        <button class="icon-btn" id="themeBtn" title="Liquid Glass Themes & Dark/Light Mode">
           <span>◐</span>
           <span>Themes</span>
         </button>
 
-        <!-- Gmail / Google 1-Click OAuth Icon -->
-        <button class="icon-btn" id="googleAuthBtn" title="One-Click Google / Gmail OAuth">
-          <svg width="18" height="18" viewBox="0 0 24 24">
+        <button class="icon-btn" id="googleAuthBtn" title="Authorize with your real Google Account">
+          <svg width="18" height="18" viewBox="0 0 24 24" id="googleSvgIcon">
             <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
             <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
             <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 8.9 0 11.1 0 13.5s.6 4.6 1.6 6.5l3.7-2.8z"/>
             <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21 7.4 24 12 24z"/>
           </svg>
-          <span id="authLabel">Sign In</span>
+          <span id="authLabel">Sign in with Google</span>
         </button>
       </div>
     </header>
 
-    <!-- Search Results Banner -->
-    <div id="searchOverlay" class="glass panel" style="display:none; width:min(1440px, calc(100% - 1.5rem)); margin: 0.75rem auto 0;"></div>
+    <div id="searchOverlay" class="glass panel" style="display:none; width:min(1480px, calc(100% - 1.5rem)); margin: 0.75rem auto 0;"></div>
 
-    <!-- Main Workspace -->
     <div class="workspace">
       <nav class="sidebar glass" id="sidebarNav"></nav>
       <main class="content-area" id="mainView"></main>
     </div>
   </div>
 
-  <!-- Floating AI Assistant Button -->
-  <button class="fab-ai" id="fabAiBtn" title="QUASAR-9 Omnipresent AI Copilot">AI</button>
+  <!-- Floating Gemini 3.5 Flash-Lite Copilot -->
+  <button class="fab-ai" id="fabAiBtn" title="QUASAR-13 Copilot (Gemini 3.5 Flash-Lite)">AI</button>
 
-  <!-- Floating AI Drawer -->
   <div class="drawer glass" id="aiDrawer" style="display:none;">
     <div class="section-header">
       <div>
-        <strong>QUASAR-9 Copilot</strong>
-        <div class="muted" style="font-size:0.74rem;">Model: Google Gemini 2.5 Pro / Ultra (Non-Flash)</div>
+        <strong>QUASAR-13 AI Copilot</strong>
+        <div class="muted" style="font-size:0.74rem;">Engine: <code>gemini-3.5-flash-lite</code></div>
       </div>
       <button class="btn-secondary" id="closeAiDrawer">✕</button>
     </div>
-    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:210px;"></div>
+    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:250px;">Ready on gemini-3.5-flash-lite. Add your Gemini API key in "API Setup" to run live AI reasoning.</div>
     <div style="display:flex; gap:0.45rem;">
-      <input id="aiPromptInput" type="text" placeholder="Ask AI to run reports, draft email, check leaves..." />
+      <input id="aiPromptInput" type="text" placeholder="Ask AI about your real deals, emails, tasks, or data..." />
       <button class="btn-primary" id="aiSendBtn">Run</button>
     </div>
   </div>
@@ -652,1161 +440,2181 @@
     <div class="modal-card glass" id="modalContent"></div>
   </div>
 
-  <script>
-    (function () {
-      'use strict';
+  <script type="module">
+    'use strict';
 
-      const STORAGE_KEY = 'quasar9_state_v3';
+    // =========================================================================
+    // OPTIONAL: PASTE YOUR PUBLIC FIREBASE WEB APP CONFIG HERE (OR USE "API SETUP" BUTTON)
+    // Firebase web configs are safe for client-side repos; access is secured via
+    // Firebase Authorized Domains & Firestore Security Rules.
+    // =========================================================================
+    const INLINE_FIREBASE_CONFIG = {
+      apiKey: '',
+      authDomain: '',
+      projectId: '',
+      storageBucket: '',
+      messagingSenderId: '',
+      appId: ''
+    };
+    const INLINE_GOOGLE_OAUTH_CLIENT_ID = '';
 
-      const DEFAULT_STATE = {
-        theme: 'ios27',
-        mode: 'dark',
-        activeTab: 'news',
-        user: {
-          signedIn: false,
-          name: 'Guest Explorer',
-          email: 'guest@quasar9.io',
-          role: 'Owner',
-          title: 'Principal Systems Architect',
-          department: 'Executive & AI',
-          salary: '$14,500 / mo',
-          leaveBalance: 18
-        },
-        aiMemories: [
-          { id: 1, title: 'Executive Formatting', instruction: 'Always include KPI variance % and actionable next steps in generated reports.' },
-          { id: 2, title: 'Google Stack Priority', instruction: 'Prefer Google Workspace and open-standard zero-cost formats for exports.' }
-        ],
-        news: [
-          {
-            id: 'n1',
-            time: '2026-11-25 12:15',
-            source: 'Google Cloud Blog',
-            title: 'Enterprise AI Agents Move From Chatbots to Autonomous Multi-System Workflows',
-            summary: 'Organizations deploying unified Workspace + CRM orchestration report 44% faster ticket resolution and zero-latency audit compliance.',
-            image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
-            likes: 128,
-            liked: false,
-            comments: ['Huge leap for zero-cost enterprise stacks.']
-          },
-          {
-            id: 'n2',
-            time: '2026-11-25 10:40',
-            source: 'TechCrunch Enterprise',
-            title: 'Why Legacy SaaS Seat Pricing Is Being Replaced by Zero-Marginal-Cost Internal OS Platforms',
-            summary: 'Modern engineering teams are consolidating CRM, HRMS, and encrypted messaging into single-pane browser applications.',
-            image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
-            likes: 94,
-            liked: false,
-            comments: []
-          },
-          {
-            id: 'n3',
-            time: '2026-11-25 08:20',
-            source: 'MIT Technology Review',
-            title: 'Client-Side WebCrypto & Zero-Knowledge Messaging Standards Gain Rapid Enterprise Adoption',
-            summary: 'Browser-native AES-256-GCM encryption enables verifiable peer-to-peer team channels without third-party relay exposure.',
-            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80',
-            likes: 211,
-            liked: false,
-            comments: ['End-to-end encryption inside the CRM is essential.']
-          }
-        ],
-        deals: [
-          { id: 'DL-101', client: 'Aether Robotics', owner: 'Karan Lavate', stage: 'Negotiation', value: '$84,000', probability: '85%' },
-          { id: 'DL-102', client: 'Helios Maritime', owner: 'Aarav Mehta', stage: 'Proposal', value: '$52,500', probability: '65%' },
-          { id: 'DL-103', client: 'Vanguard BioLabs', owner: 'Sneha Nair', stage: 'Closed Won', value: '$120,000', probability: '100%' },
-          { id: 'DL-104', client: 'Orbit Logistics', owner: 'Rohan Kulkarni', stage: 'Discovery', value: '$39,000', probability: '40%' }
-        ],
-        emails: [
-          {
-            id: 'EM-1',
-            from: 'procurement@aetherrobotics.ai',
-            subject: 'Q4 Enterprise AI Automation Rollout & Seat Expansion',
-            date: '2026-11-25 11:30',
-            body: 'Hi Team, we approved the $84,000 Q4 budget for 120 active seats starting December 1. Please send the implementation schedule, SLA matrix, and tax invoice.'
-          },
-          {
-            id: 'EM-2',
-            from: 'ops@heliosmaritime.com',
-            subject: 'Parts Extraction & ERP Sync Deliverable Review',
-            date: '2026-11-25 09:45',
-            body: 'The automated multilingual PDF extraction reduced manual lookup time by 78%. Ready to proceed to Phase 2 across 14 vessels.'
-          }
-        ],
-        meetings: [
-          { id: 'qsr-exec-901', title: 'Q4 Pipeline & Architecture Sync', host: 'Karan Lavate', time: 'Today, 15:00 IST' },
-          { id: 'qsr-client-412', title: 'Aether Robotics Technical Onboarding', host: 'Sneha Nair', time: 'Tomorrow, 11:30 IST' }
-        ],
-        contacts: [
-          { name: 'Karan Lavate', email: 'karan.lavate@quasar9.io', role: 'Owner', phone: '+91 75066 92509' },
-          { name: 'Sneha Nair', email: 'sneha.nair@quasar9.io', role: 'Director', phone: '+91 98201 44120' },
-          { name: 'Aarav Mehta', email: 'aarav.mehta@quasar9.io', role: 'Manager', phone: '+91 98192 77310' },
-          { name: 'Rohan Kulkarni', email: 'rohan.k@quasar9.io', role: 'Developer', phone: '+91 97690 11842' }
-        ],
-        orgMessages: [
-          { sender: 'Sneha Nair (Director)', time: '11:05', text: 'Q4 deal velocity is up 28% across enterprise accounts.' },
-          { sender: 'Rohan Kulkarni (Developer)', time: '11:42', text: 'SQL & Python terminal connectors synced with Employee DBMS.' }
-        ],
-        encryptedMessages: [
-          { sender: 'Sneha Nair', cipher: 'AES256GCM::9f8a2c71e4b0::Verified', plain: 'Confidential: Executive compensation review finalized for Q1.' }
-        ],
-        employees: [
-          { id: 'EMP-001', name: 'Karan Lavate', role: 'Owner', dept: 'Executive & AI', email: 'karan@quasar9.io', manager: 'Board', salary: '$14,500', status: 'Active' },
-          { id: 'EMP-002', name: 'Sneha Nair', role: 'Director', dept: 'Revenue Operations', email: 'sneha@quasar9.io', manager: 'Karan Lavate', salary: '$11,200', status: 'Active' },
-          { id: 'EMP-003', name: 'Aarav Mehta', role: 'Manager', dept: 'Enterprise Sales', email: 'aarav@quasar9.io', manager: 'Sneha Nair', salary: '$8,400', status: 'Active' },
-          { id: 'EMP-004', name: 'Rohan Kulkarni', role: 'Developer', dept: 'Platform Engineering', email: 'rohan@quasar9.io', manager: 'Karan Lavate', salary: '$7,900', status: 'Active' },
-          { id: 'EMP-005', name: 'Ananya Deshmukh', role: 'Admin', dept: 'People & HRMS', email: 'ananya@quasar9.io', manager: 'Sneha Nair', salary: '$6,500', status: 'Active' },
-          { id: 'EMP-006', name: 'Vikram Joshi', role: 'Agent', dept: 'Client Success', email: 'vikram@quasar9.io', manager: 'Aarav Mehta', salary: '$4,800', status: 'Active' }
-        ],
-        leaves: [
-          { id: 'LV-11', employee: 'Rohan Kulkarni', type: 'Annual Leave', dates: '2026-12-15 to 2026-12-18', status: 'Approved' },
-          { id: 'LV-12', employee: 'Vikram Joshi', type: 'Medical Leave', dates: '2026-11-28 to 2026-11-29', status: 'Pending' }
-        ],
-        notifications: [
-          'New Q4 procurement email received from Aether Robotics',
-          'Pending leave request LV-12 from Vikram Joshi awaits review',
-          'Real-time audit trail initialized with millisecond precision'
-        ],
-        auditTrail: []
-      };
+    const GEMINI_MODEL = 'gemini-3.5-flash-lite';
+    const FIREBASE_SDK = '10.14.1';
+    const STORAGE_KEY = 'quasar13_clean_v3';
+    const CONFIG_KEY = 'quasar13_cloud_config_v3';
 
-      let state;
+    const GOOGLE_SCOPES = [
+      'openid',
+      'email',
+      'profile',
+      'https://www.googleapis.com/auth/gmail.readonly',
+      'https://www.googleapis.com/auth/gmail.send',
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/contacts.readonly',
+      'https://www.googleapis.com/auth/drive.readonly'
+    ];
+
+    const NEWS_CATEGORIES = [
+      { id: 'TOP', label: 'Top Stories', rss: 'https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'TECHNOLOGY', label: 'Technology', rss: 'https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'BUSINESS', label: 'Business', rss: 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'WORLD', label: 'World', rss: 'https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'NATION', label: 'India / Local', rss: 'https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'SCIENCE', label: 'Science', rss: 'https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'HEALTH', label: 'Health', rss: 'https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'SPORTS', label: 'Sports', rss: 'https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en' },
+      { id: 'ENTERTAINMENT', label: 'Entertainment', rss: 'https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en' }
+    ];
+
+    // STRICTLY ZERO FICTIONAL DATA
+    const EMPTY_STATE = {
+      theme: 'ios27',
+      mode: 'dark',
+      activeTab: 'news',
+      crmView: 'table',
+      user: null, // Populated ONLY after real Firebase or Google OAuth verification
+      newsPrefs: {
+        categories: ['TOP', 'TECHNOLOGY', 'BUSINESS'],
+        customTopics: []
+      },
+      newsLikes: {},
+      newsComments: {},
+      deals: [],
+      leads: [],
+      tasks: [],
+      employees: [],
+      leaves: [],
+      orgMessages: [],
+      encryptedMessages: [],
+      aiMemories: [],
+      auditTrail: []
+    };
+
+    const DEFAULT_CONFIG = {
+      geminiApiKey: '',
+      firebaseConfigJson: INLINE_FIREBASE_CONFIG.apiKey ? JSON.stringify(INLINE_FIREBASE_CONFIG) : '',
+      googleOAuthClientId: INLINE_GOOGLE_OAUTH_CLIENT_ID
+    };
+
+    const runtime = {
+      newsItems: [],
+      newsLoading: false,
+      newsError: '',
+      gmailMessages: [],
+      gmailLoading: false,
+      gmailError: '',
+      calendarEvents: [],
+      contactsList: [],
+      driveFiles: [],
+      googleAccessToken: sessionStorage.getItem('quasar13_google_token') || '',
+      firebaseApp: null,
+      firebaseAuth: null,
+      firestoreDb: null,
+      unsubscribeChat: null
+    };
+
+    function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+    function loadJson(key, fallback) {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        state = saved ? Object.assign({}, DEFAULT_STATE, JSON.parse(saved)) : JSON.parse(JSON.stringify(DEFAULT_STATE));
-      } catch (e) {
-        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        const raw = localStorage.getItem(key);
+        return raw ? Object.assign(clone(fallback), JSON.parse(raw)) : clone(fallback);
+      } catch {
+        return clone(fallback);
+      }
+    }
+
+    let state = loadJson(STORAGE_KEY, EMPTY_STATE);
+    let config = loadJson(CONFIG_KEY, DEFAULT_CONFIG);
+    if (!config.firebaseConfigJson && INLINE_FIREBASE_CONFIG.apiKey) {
+      config.firebaseConfigJson = JSON.stringify(INLINE_FIREBASE_CONFIG);
+    }
+    if (!config.googleOAuthClientId && INLINE_GOOGLE_OAUTH_CLIENT_ID) {
+      config.googleOAuthClientId = INLINE_GOOGLE_OAUTH_CLIENT_ID;
+    }
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+      syncWorkspaceToCloud();
+    }
+
+    function saveConfig() {
+      try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); } catch {}
+    }
+
+    function nowStamp() {
+      const d = new Date();
+      const p = (n, l = 2) => String(n).padStart(l, '0');
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`;
+    }
+
+    function esc(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&')
+        .replace(/</g, '<')
+        .replace(/>/g, '>')
+        .replace(/"/g, '"');
+    }
+
+    function logAction(action, detail) {
+      state.auditTrail.unshift({
+        ts: nowStamp(),
+        actor: state.user ? `${state.user.name} (${state.user.email})` : 'Unauthenticated Visitor',
+        action,
+        detail
+      });
+      if (state.auditTrail.length > 350) state.auditTrail.length = 350;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+
+    function downloadFile(filename, content, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      logAction('EXPORT_FILE', filename);
+    }
+
+    // =========================================================================
+    // 1. GEMINI 3.5 FLASH-LITE ENGINE (Text + Native Multimodal)
+    // =========================================================================
+    async function callGemini35FlashLite(promptText, opts = {}) {
+      if (!config.geminiApiKey) {
+        return '⚠️ Gemini API key not configured. Click "API Setup" in the top bar and enter your Google AI Studio key to run gemini-3.5-flash-lite.';
       }
 
-      function saveState() {
+      const memoryBlock = state.aiMemories.length
+        ? '\nOrganization AI Memory Rules:\n' + state.aiMemories.map(m => `- ${m.title}: ${m.instruction}`).join('\n')
+        : '';
+
+      const crmSnapshot = JSON.stringify({
+        user: state.user ? { name: state.user.name, email: state.user.email } : null,
+        counts: {
+          deals: state.deals.length,
+          leads: state.leads.length,
+          tasks: state.tasks.length,
+          employees: state.employees.length,
+          gmailSynced: runtime.gmailMessages.length,
+          contactsSynced: runtime.contactsList.length,
+          driveSynced: runtime.driveFiles.length
+        },
+        deals: state.deals.slice(0, 25),
+        leads: state.leads.slice(0, 25),
+        tasks: state.tasks.slice(0, 25)
+      });
+
+      const sysInstruction =
+        `You are QUASAR-13 Enterprise AI Copilot running on Google ${GEMINI_MODEL}. ` +
+        `Never invent fictional data, names, or financial numbers. Base every response strictly on the real workspace state below.\n` +
+        `Live Workspace State: ${crmSnapshot}${memoryBlock}\n${opts.systemContext || ''}`;
+
+      const userParts = [{ text: promptText }];
+      if (opts.inlineData) userParts.push({ inline_data: opts.inlineData });
+
+      const payload = {
+        system_instruction: { parts: [{ text: sysInstruction }] },
+        contents: [{ role: 'user', parts: userParts }]
+      };
+      if (opts.thinkingLevel) {
+        payload.generationConfig = { thinkingConfig: { thinkingLevel: opts.thinkingLevel } };
+      }
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': config.geminiApiKey.trim()
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
+        const text = data.candidates?.[0]?.content?.parts
+          ?.filter(p => !p.thought && p.text)
+          .map(p => p.text)
+          .join('\n') || 'No response returned.';
+        logAction('GEMINI_35_FLASH_LITE', promptText.slice(0, 85));
+        return text;
+      } catch (err) {
+        return `❌ Gemini 3.5 Flash-Lite Error: ${err.message}`;
+      }
+    }
+
+    // =========================================================================
+    // 2. REAL FIREBASE AUTH + GOOGLE IDENTITY SERVICES (ZERO PSEUDO LOGIN)
+    // =========================================================================
+    let cloudSyncTimer = null;
+    function syncWorkspaceToCloud() {
+      if (!runtime.firestoreDb || !state.user?.uid) return;
+      clearTimeout(cloudSyncTimer);
+      cloudSyncTimer = setTimeout(async () => {
         try {
+          const { doc, setDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
+          await setDoc(doc(runtime.firestoreDb, 'quasar13_workspaces', state.user.uid), {
+            deals: state.deals,
+            leads: state.leads,
+            tasks: state.tasks,
+            employees: state.employees,
+            leaves: state.leaves,
+            aiMemories: state.aiMemories,
+            newsPrefs: state.newsPrefs,
+            updatedAt: Date.now()
+          }, { merge: true });
+        } catch {}
+      }, 900);
+    }
+
+    async function hydrateWorkspaceFromCloud(uid) {
+      if (!runtime.firestoreDb || !uid) return;
+      try {
+        const { doc, getDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
+        const snap = await getDoc(doc(runtime.firestoreDb, 'quasar13_workspaces', uid));
+        if (snap.exists()) {
+          const d = snap.data();
+          if (Array.isArray(d.deals) && !state.deals.length) state.deals = d.deals;
+          if (Array.isArray(d.leads) && !state.leads.length) state.leads = d.leads;
+          if (Array.isArray(d.tasks) && !state.tasks.length) state.tasks = d.tasks;
+          if (Array.isArray(d.employees) && d.employees.length > state.employees.length) state.employees = d.employees;
+          if (Array.isArray(d.leaves) && !state.leaves.length) state.leaves = d.leaves;
+          if (Array.isArray(d.aiMemories) && !state.aiMemories.length) state.aiMemories = d.aiMemories;
+          if (d.newsPrefs) state.newsPrefs = d.newsPrefs;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {}
-      }
+          renderAll();
+        }
+      } catch {}
+    }
 
-      function nowStamp() {
-        const d = new Date();
-        const pad = (n, l = 2) => String(n).padStart(l, '0');
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
-      }
-
-      function logAction(action, detail) {
-        state.auditTrail.unshift({
-          ts: nowStamp(),
-          actor: state.user.name,
-          role: state.user.role,
-          action,
-          detail
+    function setAuthenticatedUser(userObj) {
+      state.user = userObj;
+      if (userObj && !state.employees.some(e => e.email === userObj.email)) {
+        state.employees.push({
+          id: 'EMP-' + String(state.employees.length + 1).padStart(3, '0'),
+          name: userObj.name,
+          email: userObj.email,
+          title: '',
+          dept: '',
+          manager: '',
+          status: 'Active'
         });
-        if (state.auditTrail.length > 250) state.auditTrail.length = 250;
-        saveState();
       }
+      saveState();
+      renderAll();
+    }
 
-      function applyTheme() {
-        document.documentElement.setAttribute('data-theme', state.theme);
-        document.documentElement.setAttribute('data-mode', state.mode);
-      }
+    async function initFirebaseIfConfigured() {
+      if (!config.firebaseConfigJson) return false;
+      try {
+        const fbConfig = JSON.parse(config.firebaseConfigJson);
+        if (!fbConfig.apiKey || !fbConfig.authDomain) return false;
 
-      function downloadFile(filename, content, mime) {
+        const { initializeApp, getApps } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-app.js`);
+        const {
+          getAuth,
+          setPersistence,
+          browserLocalPersistence,
+          onAuthStateChanged,
+          getRedirectResult,
+          GoogleAuthProvider
+        } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
+        const {
+          getFirestore,
+          collection,
+          query,
+          orderBy,
+          limit,
+          onSnapshot
+        } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
+
+        runtime.firebaseApp = getApps().length ? getApps()[0] : initializeApp(fbConfig);
+        runtime.firebaseAuth = getAuth(runtime.firebaseApp);
+        runtime.firestoreDb = getFirestore(runtime.firebaseApp);
+
+        // Remember user across every refresh
+        await setPersistence(runtime.firebaseAuth, browserLocalPersistence);
+
+        // Handle redirect sign-in result if popup fallback was triggered on tablet/mobile
         try {
-          const blob = new Blob([content], { type: mime });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-          logAction('FILE_DOWNLOAD', `Exported ${filename}`);
+          const redir = await getRedirectResult(runtime.firebaseAuth);
+          if (redir) {
+            const cred = GoogleAuthProvider.credentialFromResult(redir);
+            if (cred?.accessToken) {
+              runtime.googleAccessToken = cred.accessToken;
+              sessionStorage.setItem('quasar13_google_token', cred.accessToken);
+            }
+          }
+        } catch {}
+
+        onAuthStateChanged(runtime.firebaseAuth, (fbUser) => {
+          if (fbUser) {
+            setAuthenticatedUser({
+              uid: fbUser.uid,
+              name: fbUser.displayName || fbUser.email,
+              email: fbUser.email,
+              photo: fbUser.photoURL || '',
+              provider: 'Firebase Google Auth'
+            });
+            hydrateWorkspaceFromCloud(fbUser.uid);
+
+            try {
+              if (runtime.unsubscribeChat) runtime.unsubscribeChat();
+              const q = query(collection(runtime.firestoreDb, 'quasar13_org_chat'), orderBy('createdAt', 'asc'), limit(120));
+              runtime.unsubscribeChat = onSnapshot(q, (snap) => {
+                state.orgMessages = snap.docs.map(d => d.data());
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                if (state.activeTab === 'chat') renderMainView();
+              }, () => {});
+            } catch {}
+
+            if (runtime.googleAccessToken) fetchAllGoogleWorkspaceData();
+          }
+        });
+        return true;
+      } catch (err) {
+        console.warn('Firebase init error:', err);
+        return false;
+      }
+    }
+
+    async function authorizeWithGoogle(silentHintEmail = '') {
+      // Path 1: Real Firebase GoogleAuthProvider (shows real Google Account chooser)
+      if (config.firebaseConfigJson && !silentHintEmail) {
+        try {
+          const ok = runtime.firebaseAuth ? true : await initFirebaseIfConfigured();
+          if (!ok || !runtime.firebaseAuth) throw new Error('Invalid Firebase Web Config JSON.');
+          const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          GOOGLE_SCOPES.forEach(s => provider.addScope(s));
+
+          try {
+            const result = await signInWithPopup(runtime.firebaseAuth, provider);
+            const cred = GoogleAuthProvider.credentialFromResult(result);
+            if (cred?.accessToken) {
+              runtime.googleAccessToken = cred.accessToken;
+              sessionStorage.setItem('quasar13_google_token', cred.accessToken);
+            }
+            setAuthenticatedUser({
+              uid: result.user.uid,
+              name: result.user.displayName || result.user.email,
+              email: result.user.email,
+              photo: result.user.photoURL || '',
+              provider: 'Firebase Google Auth'
+            });
+            logAction('GOOGLE_AUTH_SUCCESS', `Verified ${result.user.email} via Firebase`);
+            fetchAllGoogleWorkspaceData();
+          } catch (popupErr) {
+            if (popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/operation-not-supported-in-this-environment') {
+              await signInWithRedirect(runtime.firebaseAuth, provider);
+              return;
+            }
+            throw popupErr;
+          }
+          return;
         } catch (err) {
-          alert('Download fallback triggered: ' + err.message);
+          alert(
+            'Google Authorization Failed: ' + err.message +
+            '\n\nChecklist:\n1. Firebase Console → Authentication → Sign-in method → Enable Google\n2. Authentication → Settings → Authorized domains → Add your domain (e.g. karanlavate13.github.io)'
+          );
+          return;
         }
       }
 
-      const NAV_ITEMS = [
-        { id: 'news', label: 'Google News Feed', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'crm', label: 'CRM & Top-10 Solutions', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Agent'] },
-        { id: 'workspace', label: 'Google Workspace + AI', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'meet', label: 'Google Meet Hub', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'orgchat', label: 'Org Chat & Encrypted', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'hrms', label: 'HRMS & Org Hierarchy', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'dbms', label: 'Employee DBMS', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer'] },
-        { id: 'reports', label: 'AI Reports & Terminal', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer'] },
-        { id: 'memory', label: 'AI Memory & Skills', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer', 'Agent'] },
-        { id: 'audit', label: 'Real-Time Audit Trail', roles: ['Owner', 'Director', 'Manager', 'Admin', 'Developer'] }
+      // Path 2: Real Direct Google Identity Services OAuth2
+      if (config.googleOAuthClientId && window.google?.accounts?.oauth2) {
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: config.googleOAuthClientId.trim(),
+          scope: GOOGLE_SCOPES.join(' '),
+          hint: silentHintEmail || undefined,
+          prompt: silentHintEmail ? '' : 'select_account',
+          callback: async (tokenResp) => {
+            if (tokenResp.error) {
+              if (!silentHintEmail) alert('Google OAuth Error: ' + tokenResp.error);
+              return;
+            }
+            runtime.googleAccessToken = tokenResp.access_token;
+            sessionStorage.setItem('quasar13_google_token', tokenResp.access_token);
+            const profRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { Authorization: `Bearer ${tokenResp.access_token}` }
+            });
+            const prof = await profRes.json();
+            setAuthenticatedUser({
+              uid: prof.sub,
+              name: prof.name || prof.email,
+              email: prof.email,
+              photo: prof.picture || '',
+              provider: 'Google OAuth 2.0'
+            });
+            logAction('GOOGLE_OAUTH_SUCCESS', `Verified ${prof.email}`);
+            fetchAllGoogleWorkspaceData();
+          }
+        });
+        tokenClient.requestAccessToken();
+        return;
+      }
+
+      // Never fake login: require real Firebase or Google OAuth credentials
+      if (!silentHintEmail) {
+        openConnectModal('Real Google authorization requires your Firebase Web Config JSON (from Firebase Console → Project Settings) OR a Google Cloud OAuth 2.0 Web Client ID. Paste one below—this app never uses pseudo sign-in.');
+      }
+    }
+
+    async function signOutGoogle() {
+      if (runtime.firebaseAuth) {
+        try {
+          const { signOut } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-auth.js`);
+          await signOut(runtime.firebaseAuth);
+        } catch {}
+      }
+      logAction('GOOGLE_SIGNOUT', state.user?.email || '');
+      state.user = null;
+      runtime.googleAccessToken = '';
+      runtime.gmailMessages = [];
+      runtime.calendarEvents = [];
+      runtime.contactsList = [];
+      runtime.driveFiles = [];
+      sessionStorage.removeItem('quasar13_google_token');
+      saveState();
+      renderAll();
+    }
+
+    // =========================================================================
+    // 3. LIVE GOOGLE WORKSPACE API FETCHERS (REAL DATA ONLY)
+    // =========================================================================
+    async function googleApiFetch(url, options = {}) {
+      if (!runtime.googleAccessToken) {
+        throw new Error('Google Workspace OAuth access token is not active in this tab yet. Click your Google Account button → Re-authorize Google Workspace.');
+      }
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${runtime.googleAccessToken}`,
+          ...(options.headers || {})
+        }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || `Google API HTTP ${res.status}`);
+      return data;
+    }
+
+    async function fetchGmailInbox() {
+      if (!runtime.googleAccessToken) return;
+      runtime.gmailLoading = true;
+      runtime.gmailError = '';
+      if (state.activeTab === 'gmail') renderMainView();
+      try {
+        const list = await googleApiFetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=15');
+        const msgs = list.messages || [];
+        const details = await Promise.all(
+          msgs.map(m => googleApiFetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`))
+        );
+        runtime.gmailMessages = details.map(d => {
+          const h = (name) => d.payload?.headers?.find(x => x.name.toLowerCase() === name.toLowerCase())?.value || '';
+          return {
+            id: d.id,
+            subject: h('Subject') || '(No Subject)',
+            from: h('From') || 'Unknown Sender',
+            date: h('Date') || '',
+            snippet: d.snippet || ''
+          };
+        });
+        logAction('GMAIL_SYNC', `Fetched ${runtime.gmailMessages.length} live Gmail threads`);
+      } catch (err) {
+        runtime.gmailError = err.message;
+      } finally {
+        runtime.gmailLoading = false;
+        if (state.activeTab === 'gmail') renderMainView();
+      }
+    }
+
+    async function sendDirectGmail(to, subject, bodyText) {
+      const rawLines = [
+        `To: ${to}`,
+        `Subject: ${subject}`,
+        'Content-Type: text/plain; charset="UTF-8"',
+        '',
+        bodyText
+      ].join('\r\n');
+      const encoded = btoa(unescape(encodeURIComponent(rawLines)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      await googleApiFetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raw: encoded })
+      });
+      logAction('GMAIL_API_SEND', `Sent email to ${to}`);
+    }
+
+    async function fetchCalendarEvents() {
+      if (!runtime.googleAccessToken) return;
+      try {
+        const nowIso = new Date().toISOString();
+        const data = await googleApiFetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${encodeURIComponent(nowIso)}&maxResults=15&singleEvents=true&orderBy=startTime`);
+        runtime.calendarEvents = data.items || [];
+        if (state.activeTab === 'workspace') renderMainView();
+      } catch {}
+    }
+
+    async function fetchGoogleContacts() {
+      if (!runtime.googleAccessToken) return;
+      try {
+        const data = await googleApiFetch('https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses,phoneNumbers,organizations&pageSize=40');
+        runtime.contactsList = (data.connections || []).map(c => ({
+          name: c.names?.[0]?.displayName || 'Unnamed',
+          email: c.emailAddresses?.[0]?.value || '',
+          phone: c.phoneNumbers?.[0]?.value || '',
+          org: c.organizations?.[0]?.name || ''
+        }));
+        if (state.activeTab === 'workspace') renderMainView();
+      } catch {}
+    }
+
+    async function fetchDriveFiles() {
+      if (!runtime.googleAccessToken) return;
+      try {
+        const data = await googleApiFetch('https://www.googleapis.com/drive/v3/files?pageSize=18&fields=files(id,name,mimeType,modifiedTime,webViewLink)&orderBy=modifiedTime desc');
+        runtime.driveFiles = data.files || [];
+        if (state.activeTab === 'workspace') renderMainView();
+      } catch {}
+    }
+
+    function fetchAllGoogleWorkspaceData() {
+      fetchGmailInbox();
+      fetchCalendarEvents();
+      fetchGoogleContacts();
+      fetchDriveFiles();
+    }
+
+    // =========================================================================
+    // 4. LIVE CHRONOLOGICAL GOOGLE NEWS (ALWAYS VISIBLE — PERSONALIZABLE)
+    // =========================================================================
+    async function fetchRssFeed(rssUrl, categoryLabel) {
+      try {
+        const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+        const j = await r.json();
+        if (j.status === 'ok' && Array.isArray(j.items)) {
+          return j.items.map(it => ({
+            id: it.guid || it.link,
+            title: it.title,
+            link: it.link,
+            pubDate: it.pubDate,
+            ts: Date.parse(it.pubDate) || 0,
+            source: it.author || categoryLabel,
+            category: categoryLabel,
+            summary: (it.description || '').replace(/<[^>]+>/g, '').slice(0, 220)
+          }));
+        }
+      } catch {}
+
+      const xmlRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`);
+      const xmlText = await xmlRes.text();
+      const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+      return Array.from(doc.querySelectorAll('item')).slice(0, 14).map(node => {
+        const title = node.querySelector('title')?.textContent || '';
+        const link = node.querySelector('link')?.textContent || '#';
+        const pubDate = node.querySelector('pubDate')?.textContent || '';
+        const source = node.querySelector('source')?.textContent || categoryLabel;
+        const desc = (node.querySelector('description')?.textContent || '').replace(/<[^>]+>/g, '').slice(0, 220);
+        return { id: link, title, link, pubDate, ts: Date.parse(pubDate) || 0, source, category: categoryLabel, summary: desc };
+      });
+    }
+
+    async function loadLiveNews() {
+      runtime.newsLoading = true;
+      runtime.newsError = '';
+      if (state.activeTab === 'news') renderMainView();
+
+      const feeds = [];
+      state.newsPrefs.categories.forEach(catId => {
+        const found = NEWS_CATEGORIES.find(c => c.id === catId);
+        if (found) feeds.push({ url: found.rss, label: found.label });
+      });
+      state.newsPrefs.customTopics.forEach(topic => {
+        feeds.push({
+          url: `https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en-IN&gl=IN&ceid=IN:en`,
+          label: `#${topic}`
+        });
+      });
+      if (!feeds.length) feeds.push({ url: NEWS_CATEGORIES[0].rss, label: 'Top Stories' });
+
+      try {
+        const results = await Promise.allSettled(feeds.map(f => fetchRssFeed(f.url, f.label)));
+        const merged = [];
+        const seen = new Set();
+        results.forEach(r => {
+          if (r.status === 'fulfilled') {
+            r.value.forEach(item => {
+              if (!seen.has(item.title)) { seen.add(item.title); merged.push(item); }
+            });
+          }
+        });
+        merged.sort((a, b) => b.ts - a.ts);
+        runtime.newsItems = merged.slice(0, 36);
+        if (!runtime.newsItems.length) runtime.newsError = 'Live Google News feed could not be reached right now. Click Refresh.';
+      } catch (err) {
+        runtime.newsError = 'Feed error: ' + err.message;
+      } finally {
+        runtime.newsLoading = false;
+        if (state.activeTab === 'news') renderMainView();
+      }
+    }
+
+    // =========================================================================
+    // 5. NAVIGATION & MODULE VIEWS (NO ROLE GATING, ZERO FICTIONAL DATA)
+    // =========================================================================
+    const NAV_ITEMS = [
+      { id: 'news', label: 'Google News Feed' },
+      { id: 'crm', label: 'CRM Pipeline & Funnel' },
+      { id: 'gmail', label: 'Gmail Inbox Preview' },
+      { id: 'chat', label: 'Team & E2EE Chat' },
+      { id: 'workspace', label: 'Google Workspace Suite' },
+      { id: 'extractor', label: 'AI Multimodal Extractor' },
+      { id: 'hrms', label: 'HRMS & Employee DBMS' },
+      { id: 'reports', label: 'AI Reports & SQL Terminal' },
+      { id: 'memory', label: 'AI Memory & Skills' },
+      { id: 'audit', label: 'Real-Time Audit Trail' }
+    ];
+
+    function renderSidebar() {
+      const nav = document.getElementById('sidebarNav');
+      nav.innerHTML = NAV_ITEMS.map(item => `
+        <button class="glass-pill nav-item ${state.activeTab === item.id ? 'active' : ''}" data-tab="${item.id}">
+          <span>${item.label}</span>
+          <span style="opacity:0.65;">›</span>
+        </button>
+      `).join('');
+
+      nav.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.onclick = () => {
+          state.activeTab = btn.dataset.tab;
+          logAction('NAVIGATE', state.activeTab);
+          renderAll();
+        };
+      });
+    }
+
+    function renderNews() {
+      const activeLabels = [
+        ...state.newsPrefs.categories.map(id => NEWS_CATEGORIES.find(c => c.id === id)?.label || id),
+        ...state.newsPrefs.customTopics.map(t => `#${t}`)
       ];
 
-      function renderSidebar() {
-        const nav = document.getElementById('sidebarNav');
-        const allowed = NAV_ITEMS.filter(item => item.roles.includes(state.user.role));
-        if (!allowed.some(i => i.id === state.activeTab)) {
-          state.activeTab = 'news';
-        }
-        nav.innerHTML = allowed.map(item => `
-          <button class="glass-pill nav-item ${state.activeTab === item.id ? 'active' : ''}" data-tab="${item.id}">
-            <span>${item.label}</span>
-            <span style="opacity:0.65;">›</span>
-          </button>
-        `).join('');
-
-        nav.querySelectorAll('[data-tab]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            state.activeTab = btn.getAttribute('data-tab');
-            logAction('NAVIGATE', `Opened ${state.activeTab}`);
-            renderAll();
-          });
-        });
-      }
-
-      function renderNews() {
-        return `
-          <div class="glass panel">
-            <div class="section-header">
-              <div>
-                <div class="section-title">Chronological Google News Feed</div>
-                <div class="muted">Real-time publisher stream • Accessible signed-in or signed-out • Strictly chronological</div>
-              </div>
-              <span class="pill-tag">Live Feed • ${state.news.length} Stories</span>
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Live Chronological Google News</div>
+              <div class="muted">Visible regardless of user sign-in • Active feed: ${esc(activeLabels.join(', '))}</div>
             </div>
-            <div class="grid-3">
-              ${state.news.map(n => `
-                <article class="glass news-card">
-                  <img class="news-img" src="${n.image}" alt="${n.title}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22300%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%230b132b%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%237dd3fc%22 font-family=%22sans-serif%22 font-size=%2220%22 text-anchor=%22middle%22>Google News Publisher Feed</text></svg>'" />
-                  <div style="display:flex; justify-content:space-between; font-size:0.75rem;" class="muted">
-                    <strong>${n.source}</strong>
-                    <span>${n.time}</span>
-                  </div>
-                  <h3 style="font-size:0.98rem; line-height:1.35;">${n.title}</h3>
-                  <p class="muted" style="font-size:0.83rem; line-height:1.45;">${n.summary}</p>
-                  <div class="news-actions">
-                    <button class="btn-secondary" data-like="${n.id}">${n.liked ? '♥' : '♡'} ${n.likes}</button>
-                    <button class="btn-secondary" data-comment="${n.id}">💬 ${n.comments.length}</button>
-                    <button class="btn-secondary" data-share="${n.id}">↗ Share</button>
-                  </div>
-                  ${n.comments.length ? `<div class="muted" style="font-size:0.76rem;">Latest: "${n.comments[n.comments.length - 1]}"</div>` : ''}
-                </article>
-              `).join('')}
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-primary" id="personalizeNewsBtn">⚙ Personalize</button>
+              <button class="btn-secondary" id="aiNewsBriefBtn">✦ AI Brief (3.5 Flash-Lite)</button>
+              <button class="btn-secondary" id="refreshNewsBtn">↻ Refresh</button>
             </div>
           </div>
-        `;
-      }
 
-      function renderCRM() {
-        return `
-          <div class="glass panel">
-            <div class="section-header">
-              <div>
-                <div class="section-title">Enterprise Deal Pipeline</div>
-                <div class="muted">Zero-seat-tax revenue orchestration & automated deal tracking</div>
-              </div>
-              <button class="btn-primary" id="addDealBtn">+ New Deal</button>
+          <div id="aiNewsDigestBox" class="terminal-box" style="display:none; margin-bottom:1rem;"></div>
+
+          ${runtime.newsLoading ? `
+            <div class="empty-state"><div class="section-title">Fetching live Google News feeds...</div><div class="muted">Sorting strictly newest-first...</div></div>
+          ` : runtime.newsError ? `
+            <div class="empty-state"><div class="section-title">${esc(runtime.newsError)}</div><button class="btn-primary" style="margin-top:0.75rem;" id="retryNewsBtn">Retry</button></div>
+          ` : `
+            <div class="grid-3">
+              ${runtime.newsItems.map(n => {
+                const liked = !!state.newsLikes[n.id];
+                const comments = state.newsComments[n.id] || [];
+                const timeStr = n.ts ? new Date(n.ts).toLocaleString() : n.pubDate;
+                return `
+                  <article class="glass news-card">
+                    <div style="display:flex; justify-content:space-between; gap:0.4rem; align-items:center;">
+                      <span class="pill-tag">${esc(n.category)}</span>
+                      <span class="muted" style="font-size:0.72rem;">${esc(timeStr)}</span>
+                    </div>
+                    <h3 style="font-size:0.95rem; line-height:1.38;">
+                      <a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">${esc(n.title)}</a>
+                    </h3>
+                    <div class="muted" style="font-size:0.76rem;">Source: ${esc(n.source)}</div>
+                    ${n.summary ? `<p class="muted" style="font-size:0.81rem; line-height:1.45;">${esc(n.summary)}</p>` : ''}
+                    <div class="news-actions">
+                      <button class="btn-secondary" data-like-news="${esc(n.id)}">${liked ? '♥ Liked' : '♡ Like'}</button>
+                      <button class="btn-secondary" data-comment-news="${esc(n.id)}">💬 ${comments.length}</button>
+                      <a class="btn-secondary" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+                    </div>
+                    ${comments.length ? `<div class="muted" style="font-size:0.75rem;">Note: "${esc(comments[comments.length - 1])}"</div>` : ''}
+                  </article>
+                `;
+              }).join('')}
             </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderCRM() {
+      const stages = ['Lead / Discovery', 'Proposal', 'Negotiation', 'Closed Won'];
+      const totalValue = state.deals.reduce((s, d) => s + (Number(d.amount) || 0), 0);
+      const weighted = state.deals.reduce((s, d) => s + ((Number(d.amount) || 0) * ((Number(d.probability) || 0) / 100)), 0);
+      const wonVal = state.deals.filter(d => d.stage === 'Closed Won').reduce((s, d) => s + (Number(d.amount) || 0), 0);
+
+      return `
+        <div class="grid-4">
+          <div class="glass kpi-card"><div class="muted">Live Pipeline Value</div><div class="kpi-val">$${totalValue.toLocaleString()}</div><div class="muted">${state.deals.length} deals</div></div>
+          <div class="glass kpi-card"><div class="muted">Weighted Forecast</div><div class="kpi-val">$${Math.round(weighted).toLocaleString()}</div><div class="muted">Probability adjusted</div></div>
+          <div class="glass kpi-card"><div class="muted">Closed Won Revenue</div><div class="kpi-val">$${wonVal.toLocaleString()}</div><div class="muted">${state.leads.length} leads</div></div>
+          <div class="glass kpi-card"><div class="muted">Open Follow-Up Tasks</div><div class="kpi-val">${state.tasks.filter(t => !t.done).length}</div><div class="muted">${state.tasks.length} total tasks</div></div>
+        </div>
+
+        <div class="glass panel">
+          <div class="section-header" style="margin-bottom:0.65rem;">
+            <div class="section-title">Live Revenue Stage Funnel</div>
+            <span class="muted">Calculated strictly from your real deals</span>
+          </div>
+          <div class="grid-4">
+            ${stages.map(st => {
+              const items = state.deals.filter(d => d.stage === st);
+              const val = items.reduce((s, d) => s + (Number(d.amount) || 0), 0);
+              const pct = totalValue > 0 ? Math.round((val / totalValue) * 100) : 0;
+              return `
+                <div class="glass panel" style="padding:0.8rem;">
+                  <div style="display:flex; justify-content:space-between; font-size:0.82rem;"><strong>${st}</strong><span>${pct}%</span></div>
+                  <div class="muted" style="font-size:0.78rem;">${items.length} deals • $${val.toLocaleString()}</div>
+                  <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:${pct}%;"></div></div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Deal Pipeline & Activity Lifecycle</div>
+              <div class="muted">Kanban + Table • Call notes • CSV import/export • Gemini 3.5 Flash-Lite Deal Coach</div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-primary" id="addDealBtn">+ Add Deal</button>
+              <button class="btn-secondary" id="toggleCrmViewBtn">${state.crmView === 'table' ? 'Kanban Board' : 'Table View'}</button>
+              <button class="btn-secondary" id="aiScoreDealsBtn">✦ AI Deal Coach</button>
+              <button class="btn-secondary" id="importCsvBtn">⬆ Import CSV</button>
+              <button class="btn-secondary" id="exportDealsBtn">⬇ Export Excel</button>
+              <input type="file" id="csvFileInput" accept=".csv" style="display:none;" />
+            </div>
+          </div>
+
+          <div id="aiDealCoachBox" class="terminal-box" style="display:none; margin-bottom:1rem;"></div>
+
+          ${!state.deals.length ? `
+            <div class="empty-state">
+              <div class="section-title">No deals recorded</div>
+              <p class="muted" style="margin:0.4rem 0 0.9rem;">Add your first real deal, import a CSV, or convert an email from your Gmail Inbox Preview.</p>
+              <button class="btn-primary" id="emptyAddDealBtn">+ Add Deal</button>
+            </div>
+          ` : state.crmView === 'kanban' ? `
+            <div class="kanban-grid">
+              ${stages.map(st => `
+                <div class="glass kanban-col">
+                  <div style="font-weight:700; margin-bottom:0.65rem; font-size:0.86rem;">${st}</div>
+                  ${state.deals.filter(d => d.stage === st).map(d => `
+                    <div class="glass panel" style="padding:0.75rem; margin-bottom:0.55rem;">
+                      <strong>${esc(d.client)}</strong>
+                      <div class="muted">$${Number(d.amount).toLocaleString()} • ${d.probability}%</div>
+                      <div class="muted" style="font-size:0.74rem;">Notes: ${(d.notes || []).length}${d.owner ? ' • ' + esc(d.owner) : ''}</div>
+                      <div style="margin-top:0.5rem; display:flex; gap:0.3rem; flex-wrap:wrap;">
+                        <button class="btn-secondary" style="font-size:0.73rem; padding:0.25rem 0.55rem;" data-advance-deal="${d.id}">Move ›</button>
+                        <button class="btn-secondary" style="font-size:0.73rem; padding:0.25rem 0.55rem;" data-note-deal="${d.id}">+ Note</button>
+                        <button class="btn-secondary" style="font-size:0.73rem; padding:0.25rem 0.55rem;" data-del-deal="${d.id}">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `).join('')}
+            </div>
+          ` : `
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr><th>ID</th><th>Client</th><th>Owner</th><th>Stage</th><th>Value</th><th>Win Prob.</th><th>Action</th></tr>
-                </thead>
+                <thead><tr><th>ID</th><th>Account</th><th>Owner</th><th>Stage</th><th>Value</th><th>Win %</th><th>Latest Note</th><th>Actions</th></tr></thead>
                 <tbody>
                   ${state.deals.map(d => `
                     <tr>
-                      <td>${d.id}</td>
-                      <td><strong>${d.client}</strong></td>
-                      <td>${d.owner}</td>
-                      <td><span class="pill-tag">${d.stage}</span></td>
-                      <td>${d.value}</td>
-                      <td>${d.probability}</td>
-                      <td><button class="btn-secondary" data-advance-deal="${d.id}">Advance Stage</button></td>
+                      <td>${esc(d.id)}</td>
+                      <td><strong>${esc(d.client)}</strong></td>
+                      <td>${esc(d.owner || '—')}</td>
+                      <td><span class="pill-tag">${esc(d.stage)}</span></td>
+                      <td>$${Number(d.amount).toLocaleString()}</td>
+                      <td>${d.probability}%</td>
+                      <td class="muted" style="font-size:0.78rem;">${esc((d.notes || []).slice(-1)[0] || '—')}</td>
+                      <td style="display:flex; gap:0.3rem; flex-wrap:wrap;">
+                        <button class="btn-secondary" data-advance-deal="${d.id}">Next Stage</button>
+                        <button class="btn-secondary" data-note-deal="${d.id}">+ Note</button>
+                        <button class="btn-secondary" data-del-deal="${d.id}">Delete</button>
+                      </td>
                     </tr>
                   `).join('')}
                 </tbody>
               </table>
             </div>
-          </div>
+          `}
+        </div>
 
+        <div class="grid-2">
           <div class="glass panel">
             <div class="section-header">
-              <div>
-                <div class="section-title">Where Top-10 World CRMs Fail — QUASAR-9 Architectural Overrides</div>
-                <div class="muted">Eliminating legacy CRM friction at zero cost</div>
-              </div>
+              <div class="section-title">Leads & Prospects</div>
+              <button class="btn-primary" id="addLeadBtn">+ Add Lead</button>
             </div>
-            <div class="grid-3">
-              <div class="glass panel"><strong>1. Zero Per-Seat Pricing</strong><p class="muted" style="margin-top:0.35rem;">Unlimited organizational roles with zero license bloat.</p></div>
-              <div class="glass panel"><strong>2. Zero-Friction Email Extraction</strong><p class="muted" style="margin-top:0.35rem;">Converts raw Gmail threads directly into Excel, Doc, PDF, and Power BI files.</p></div>
-              <div class="glass panel"><strong>3. Single-Pane Google Workspace</strong><p class="muted" style="margin-top:0.35rem;">Embedded Meet, Gmail, Calendar, and Contacts without browser tab switching.</p></div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderWorkspace() {
-        return `
-          <div class="grid-2">
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Gmail Preview + AI File Extractor</div>
-                  <div class="muted">Extract email intelligence into Excel, Word/Docs, PDF, or Power BI</div>
-                </div>
-                <button class="btn-primary" id="composeEmailBtn">Compose Gmail</button>
-              </div>
-              ${state.emails.map(em => `
-                <div class="glass panel" style="margin-bottom:0.75rem;">
-                  <div style="display:flex; justify-content:space-between; gap:0.5rem;">
-                    <strong>${em.subject}</strong>
-                    <span class="muted" style="font-size:0.75rem;">${em.date}</span>
-                  </div>
-                  <div class="muted" style="font-size:0.78rem; margin:0.2rem 0 0.5rem;">From: ${em.from}</div>
-                  <p style="font-size:0.85rem; margin-bottom:0.65rem;">${em.body}</p>
-                  <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                    <button class="btn-secondary" data-extract="${em.id}" data-fmt="xls">Extract Excel (.xls)</button>
-                    <button class="btn-secondary" data-extract="${em.id}" data-fmt="doc">Extract Doc (.doc)</button>
-                    <button class="btn-secondary" data-extract="${em.id}" data-fmt="pbi">Extract Power BI (.pbids.json)</button>
-                    <button class="btn-secondary" data-extract="${em.id}" data-fmt="pdf">Print / PDF Summary</button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Google Calendar & Contacts Sync</div>
-                  <div class="muted">Embedded schedule and organization directory</div>
-                </div>
-              </div>
-              <div class="glass panel" style="margin-bottom:0.85rem;">
-                <strong>Upcoming Schedule</strong>
-                <ul style="margin-top:0.5rem; padding-left:1.1rem;" class="muted">
-                  <li>15:00 IST — Q4 Pipeline & Architecture Sync (Google Meet)</li>
-                  <li>17:30 IST — Automated AI Extraction Audit</li>
-                </ul>
-              </div>
+            ${!state.leads.length ? `<div class="empty-state muted">No leads yet. Add manually or import directly from Google Contacts.</div>` : `
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>Contact</th><th>Role</th><th>Email</th><th>Phone</th></tr></thead>
+                  <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
                   <tbody>
-                    ${state.contacts.map(c => `<tr><td>${c.name}</td><td>${c.role}</td><td>${c.email}</td><td>${c.phone}</td></tr>`).join('')}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderMeet() {
-        return `
-          <div class="glass panel">
-            <div class="section-header">
-              <div>
-                <div class="section-title">Google Meet Embedded Portal</div>
-                <div class="muted">Launch or join meetings directly inside QUASAR-9 without opening external tabs</div>
-              </div>
-              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                <button class="btn-primary" id="startMeetBtn">Start a New Meet using G-Meet</button>
-                <button class="btn-secondary" id="joinMeetBtn">Join Meet using Invite Link</button>
-              </div>
-            </div>
-            <div id="meetStage" class="glass panel" style="margin-bottom:1rem; text-align:center;">
-              <div style="font-weight:700; margin-bottom:0.35rem;">Embedded G-Meet Stage Ready</div>
-              <div class="muted">Click "Start a New Meet using G-Meet" or paste an invite code to activate your embedded conference room.</div>
-            </div>
-            <div class="grid-2">
-              ${state.meetings.map(m => `
-                <div class="glass panel" style="display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <strong>${m.title}</strong>
-                    <div class="muted">${m.time} • Host: ${m.host} • ID: ${m.id}</div>
-                  </div>
-                  <button class="btn-primary" data-launch-room="${m.id}">Enter Room</button>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      }
-
-      function renderOrgChat() {
-        return `
-          <div class="grid-2">
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Organization-Wide Channel (#general)</div>
-                  <div class="muted">Real-time internal team collaboration</div>
-                </div>
-              </div>
-              <div style="max-height:240px; overflow-y:auto; margin-bottom:0.75rem;">
-                ${state.orgMessages.map(m => `
-                  <div class="glass panel" style="padding:0.65rem; margin-bottom:0.5rem;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.76rem;" class="muted">
-                      <strong>${m.sender}</strong><span>${m.time}</span>
-                    </div>
-                    <div style="margin-top:0.25rem; font-size:0.88rem;">${m.text}</div>
-                  </div>
-                `).join('')}
-              </div>
-              <div style="display:flex; gap:0.5rem;">
-                <input id="orgChatInput" type="text" placeholder="Message entire organization..." />
-                <button class="btn-primary" id="sendOrgChatBtn">Send</button>
-              </div>
-            </div>
-
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Colleagues & Friends (End-to-End Encrypted)</div>
-                  <div class="muted">Protected with WebCrypto AES-256-GCM</div>
-                </div>
-                <span class="pill-tag">🔒 E2EE Active</span>
-              </div>
-              <div style="max-height:240px; overflow-y:auto; margin-bottom:0.75rem;">
-                ${state.encryptedMessages.map(m => `
-                  <div class="glass panel" style="padding:0.65rem; margin-bottom:0.5rem;">
-                    <div style="font-size:0.74rem; font-family:var(--font-mono);" class="muted">${m.cipher}</div>
-                    <div style="margin-top:0.25rem; font-size:0.88rem;"><strong>${m.sender}:</strong> ${m.plain}</div>
-                  </div>
-                `).join('')}
-              </div>
-              <div style="display:flex; gap:0.5rem;">
-                <input id="e2eChatInput" type="text" placeholder="Send AES-256-GCM encrypted message..." />
-                <button class="btn-primary" id="sendE2eChatBtn">Encrypt & Send</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderHRMS() {
-        const canApprove = ['Owner', 'Director', 'Manager', 'Admin'].includes(state.user.role);
-        return `
-          <div class="grid-2">
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Professional Profile & Compensation</div>
-                  <div class="muted">One-place self-service HRMS portal</div>
-                </div>
-                <button class="btn-primary" id="requestLeaveBtn">Request Leave</button>
-              </div>
-              <div class="glass panel" style="margin-bottom:0.85rem;">
-                <div><strong>Name:</strong> ${state.user.name}</div>
-                <div><strong>Role:</strong> ${state.user.role} (${state.user.department})</div>
-                <div><strong>Monthly Compensation:</strong> ${state.user.salary}</div>
-                <div><strong>Available Leave Balance:</strong> ${state.user.leaveBalance} Days</div>
-              </div>
-              <div class="section-title" style="font-size:1rem; margin-bottom:0.5rem;">Leave Requests & Approvals</div>
-              <div class="table-wrap">
-                <table>
-                  <thead><tr><th>ID</th><th>Employee</th><th>Type</th><th>Dates</th><th>Status</th>${canApprove ? '<th>Action</th>' : ''}</tr></thead>
-                  <tbody>
-                    ${state.leaves.map(l => `
+                    ${state.leads.map(l => `
                       <tr>
-                        <td>${l.id}</td>
-                        <td>${l.employee}</td>
-                        <td>${l.type}</td>
-                        <td>${l.dates}</td>
-                        <td><span class="pill-tag">${l.status}</span></td>
-                        ${canApprove ? `<td>${l.status === 'Pending' ? `<button class="btn-primary" data-approve-leave="${l.id}">Approve</button>` : '—'}</td>` : ''}
+                        <td><strong>${esc(l.name)}</strong></td>
+                        <td>${esc(l.company || '—')}</td>
+                        <td>${esc(l.email || '—')}</td>
+                        <td><span class="pill-tag">${esc(l.status)}</span></td>
+                        <td><button class="btn-secondary" data-convert-lead="${l.id}">→ Deal</button></td>
                       </tr>
                     `).join('')}
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Organization Hierarchy Tree</div>
-                  <div class="muted">Live reporting structure across QUASAR-9</div>
-                </div>
-              </div>
-              <div class="glass tree-node"><strong>Tier 1 — Owner:</strong> Karan Lavate (Executive & AI)</div>
-              <div class="glass tree-node" style="margin-left:1.25rem;"><strong>Tier 2 — Director:</strong> Sneha Nair (Revenue Operations)</div>
-              <div class="glass tree-node" style="margin-left:2.5rem;"><strong>Tier 3 — Manager:</strong> Aarav Mehta (Enterprise Sales) • <strong>Admin:</strong> Ananya Deshmukh (HRMS)</div>
-              <div class="glass tree-node" style="margin-left:3.75rem;"><strong>Tier 4 — Developer & Agent:</strong> Rohan Kulkarni (Engineering) • Vikram Joshi (Client Success)</div>
-            </div>
+            `}
           </div>
-        `;
-      }
 
-      function renderDBMS() {
-        return `
           <div class="glass panel">
             <div class="section-header">
-              <div>
-                <div class="section-title">Organization Employee Database Management System (DBMS)</div>
-                <div class="muted">Complete relational personnel directory with instant Excel/CSV export</div>
-              </div>
-              <div style="display:flex; gap:0.5rem;">
-                <button class="btn-primary" id="addEmpBtn">+ Add Employee</button>
-                <button class="btn-secondary" id="exportDbmsBtn">Export Excel (.xls)</button>
-              </div>
+              <div class="section-title">Follow-Up Tasks & SLAs</div>
+              <button class="btn-primary" id="addTaskBtn">+ Add Task</button>
             </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Manager</th><th>Salary</th><th>Status</th></tr></thead>
-                <tbody>
-                  ${state.employees.map(e => `
-                    <tr>
-                      <td>${e.id}</td>
-                      <td><strong>${e.name}</strong></td>
-                      <td><span class="pill-tag">${e.role}</span></td>
-                      <td>${e.dept}</td>
-                      <td>${e.email}</td>
-                      <td>${e.manager}</td>
-                      <td>${e.salary}</td>
-                      <td>${e.status}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderReports() {
-        return `
-          <div class="grid-2">
-            <div class="glass panel">
-              <div class="section-header">
+            ${!state.tasks.length ? `<div class="empty-state muted">No tasks scheduled yet.</div>` : state.tasks.map(t => `
+              <div class="glass panel" style="padding:0.75rem; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
                 <div>
-                  <div class="section-title">AI Reports & Dashboards Studio</div>
-                  <div class="muted">Powered by Google Gemini Pro / Ultra Architecture (Non-Flash)</div>
+                  <strong style="${t.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">${esc(t.title)}</strong>
+                  <div class="muted" style="font-size:0.76rem;">Due: ${esc(t.due || '—')}${t.owner ? ' • ' + esc(t.owner) : ''}</div>
                 </div>
-              </div>
-              <div style="margin-bottom:0.85rem;">
-                <div class="muted" style="margin-bottom:0.4rem;"><strong>Proactive AI Report Suggestions (Minimum 3):</strong></div>
-                <div style="display:flex; flex-direction:column; gap:0.45rem;">
-                  <button class="btn-secondary" style="text-align:left;" data-gen-preset="Q4 Revenue & Pipeline Forecast (Power BI)">1. Q4 Revenue & Pipeline Forecast — Power BI (.pbids.json)</button>
-                  <button class="btn-secondary" style="text-align:left;" data-gen-preset="Organization Payroll & Headcount Ledger (Excel)">2. Organization Payroll & Headcount Ledger — Excel (.xls)</button>
-                  <button class="btn-secondary" style="text-align:left;" data-gen-preset="Executive Board Governance & SLA Brief (Word Doc)">3. Executive Board Governance & SLA Brief — Word/Google Doc (.doc)</button>
-                </div>
-              </div>
-              <div style="display:flex; flex-direction:column; gap:0.55rem;">
-                <input id="customReportPrompt" type="text" placeholder="Describe custom report or dashboard..." />
-                <div style="display:flex; gap:0.5rem;">
-                  <select id="customReportFormat">
-                    <option value="xls">Excel / Google Sheet (.xls)</option>
-                    <option value="doc">Word / Google Doc (.doc)</option>
-                    <option value="pbi">Power BI Dashboard (.pbids.json)</option>
-                    <option value="pdf">PDF Print Report</option>
-                  </select>
-                  <button class="btn-primary" id="generateCustomReportBtn">Generate & Download</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass panel">
-              <div class="section-header">
-                <div>
-                  <div class="section-title">Integrated SQL / Python / HTML Terminal</div>
-                  <div class="muted">Live query & runtime code execution console</div>
-                </div>
-                <select id="termLangSelect" style="width:auto;">
-                  <option value="SQL">SQL</option>
-                  <option value="Python">Python</option>
-                  <option value="HTML">HTML</option>
-                </select>
-              </div>
-              <textarea id="termCodeInput" rows="4" style="font-family:var(--font-mono); margin-bottom:0.55rem;">SELECT id, name, role, dept, salary FROM employees WHERE status = 'Active';</textarea>
-              <button class="btn-primary" id="runTermBtn" style="margin-bottom:0.65rem;">▶ Execute in Terminal</button>
-              <div class="terminal-box" id="termOutput">QUASAR-9 Terminal Ready. Select SQL, Python, or HTML and click Execute.</div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderMemory() {
-        return `
-          <div class="glass panel">
-            <div class="section-header">
-              <div>
-                <div class="section-title">AI Memory & Custom Skills Registry</div>
-                <div class="muted">Stored instructions personalize AI behavior. Without changes, baseline AI behavior remains locked.</div>
-              </div>
-            </div>
-            <div class="grid-2" style="margin-bottom:1rem;">
-              <input id="memTitleInput" type="text" placeholder="Skill / Memory Name (e.g., CFO Tone)" />
-              <div style="display:flex; gap:0.5rem;">
-                <input id="memInstructionInput" type="text" placeholder="Instruction rule for AI..." />
-                <button class="btn-primary" id="addMemBtn">Save</button>
-              </div>
-            </div>
-            ${state.aiMemories.map(m => `
-              <div class="glass panel" style="margin-bottom:0.55rem; display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
-                <div>
-                  <strong>${m.title}</strong>
-                  <div class="muted">${m.instruction}</div>
-                </div>
-                <button class="btn-secondary" data-del-mem="${m.id}">Remove</button>
+                <button class="btn-secondary" data-toggle-task="${t.id}">${t.done ? 'Reopen' : 'Done ✓'}</button>
               </div>
             `).join('')}
           </div>
-        `;
-      }
+        </div>
+      `;
+    }
 
-      function renderAudit() {
-        return `
+    function renderGmail() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Live Gmail Inbox Preview + AI Deal & File Extractor</div>
+              <div class="muted">${state.user ? `Authorized account: ${esc(state.user.email)}` : 'Sign in with your Google Account to load your real Gmail inbox'}</div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              ${state.user ? `<button class="btn-primary" id="syncGmailBtn">↻ Sync Live Gmail</button>` : `<button class="btn-primary" id="gmailSignInBtn">Sign in with Google</button>`}
+              <button class="btn-secondary" id="composeGmailBtn">✉ Compose & Send</button>
+              <a class="btn-secondary" href="https://mail.google.com" target="_blank" rel="noopener noreferrer">Open Full Gmail ↗</a>
+            </div>
+          </div>
+
+          ${runtime.gmailLoading ? `
+            <div class="empty-state">Syncing real Gmail threads...</div>
+          ` : runtime.gmailError ? `
+            <div class="empty-state">
+              <div class="section-title">Gmail Authorization Required</div>
+              <p class="muted" style="margin:0.5rem 0;">${esc(runtime.gmailError)}</p>
+              <button class="btn-primary" id="reauthGmailBtn">Authorize Google Workspace Access</button>
+            </div>
+          ` : !state.user ? `
+            <div class="empty-state">
+              <div class="section-title">Authorize Your Google Account</div>
+              <p class="muted" style="margin:0.45rem 0 0.9rem;">Sign in once with Google/Firebase—QUASAR-13 remembers your account across page refreshes.</p>
+              <button class="btn-primary" id="gmailSignInBtn2">Sign in with Google</button>
+            </div>
+          ` : !runtime.gmailMessages.length ? `
+            <div class="empty-state">
+              <div class="section-title">Gmail Connected (${esc(state.user.email)})</div>
+              <p class="muted" style="margin:0.45rem 0 0.9rem;">Click below to fetch your latest real Gmail threads.</p>
+              <button class="btn-primary" id="reauthGmailBtn2">Sync / Authorize Live Gmail</button>
+            </div>
+          ` : runtime.gmailMessages.map(em => `
+            <div class="glass panel" style="margin-bottom:0.75rem;">
+              <div style="display:flex; justify-content:space-between; gap:0.5rem; flex-wrap:wrap;">
+                <strong>${esc(em.subject)}</strong>
+                <span class="muted" style="font-size:0.75rem;">${esc(em.date)}</span>
+              </div>
+              <div class="muted" style="font-size:0.78rem; margin:0.2rem 0 0.45rem;">From: ${esc(em.from)}</div>
+              <p style="font-size:0.85rem; margin-bottom:0.65rem;">${esc(em.snippet)}</p>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <button class="btn-primary" data-ai-email="${esc(em.id)}">✦ AI Summary & Reply</button>
+                <button class="btn-secondary" data-email-to-deal="${esc(em.id)}">+ Create CRM Deal</button>
+                <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="xls">Excel (.xls)</button>
+                <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="doc">Doc (.doc)</button>
+                <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="pbi">Power BI</button>
+              </div>
+              <div id="ai-email-out-${esc(em.id)}" class="terminal-box" style="display:none; margin-top:0.6rem;"></div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderChat() {
+      return `
+        <div class="grid-2">
           <div class="glass panel">
             <div class="section-header">
               <div>
-                <div class="section-title">Immutable Real-Time Audit Trail</div>
-                <div class="muted">Every single user action recorded with millisecond timestamp precision</div>
+                <div class="section-title">Organization Real-Time Chat</div>
+                <div class="muted">${runtime.firestoreDb ? '🟢 Cloud Firestore Live Sync Active' : 'Connect Firebase in API Setup for multi-user real-time sync'}</div>
               </div>
-              <span class="pill-tag">${state.auditTrail.length} Recorded Events</span>
+              <a class="btn-secondary" href="https://chat.google.com" target="_blank" rel="noopener noreferrer">Google Chat ↗</a>
             </div>
+            <div style="max-height:320px; overflow-y:auto; margin-bottom:0.75rem;">
+              ${!state.orgMessages.length ? `
+                <div class="empty-state muted">No messages yet.</div>
+              ` : state.orgMessages.map(m => `
+                <div class="glass panel" style="padding:0.65rem; margin-bottom:0.5rem;">
+                  <div style="display:flex; justify-content:space-between; font-size:0.75rem;" class="muted">
+                    <strong>${esc(m.sender)}</strong><span>${esc(m.time)}</span>
+                  </div>
+                  <div style="margin-top:0.25rem; font-size:0.88rem;">${esc(m.text)}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <input id="orgChatInput" type="text" placeholder="${state.user ? 'Message your organization...' : 'Sign in with Google to chat with your verified identity...'}" />
+              <button class="btn-primary" id="sendOrgChatBtn">Send</button>
+            </div>
+          </div>
+
+          <div class="glass panel">
+            <div class="section-header">
+              <div>
+                <div class="section-title">End-to-End Encrypted Chat (AES-256-GCM)</div>
+                <div class="muted">Native WebCrypto PBKDF2 + AES-256-GCM encryption in-browser</div>
+              </div>
+              <span class="pill-tag">🔒 E2EE</span>
+            </div>
+            <div style="margin-bottom:0.6rem;">
+              <input id="e2ePassphrase" type="password" placeholder="Enter your shared room passphrase to encrypt messages..." />
+            </div>
+            <div style="max-height:265px; overflow-y:auto; margin-bottom:0.75rem;">
+              ${!state.encryptedMessages.length ? `
+                <div class="empty-state muted">No encrypted messages yet.</div>
+              ` : state.encryptedMessages.map(m => `
+                <div class="glass panel" style="padding:0.65rem; margin-bottom:0.5rem;">
+                  <div style="font-size:0.72rem; font-family:var(--font-mono);" class="muted">${esc(m.cipher)}</div>
+                  <div style="margin-top:0.25rem; font-size:0.88rem;"><strong>${esc(m.sender)}:</strong> ${esc(m.plain)}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <input id="e2eChatInput" type="text" placeholder="Type confidential message..." />
+              <button class="btn-primary" id="sendE2eChatBtn">Encrypt</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWorkspace() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Complete Google Organization Suite</div>
+              <div class="muted">Meet, Calendar, Contacts, Drive, Translate, Docs, Sheets, Slides, Keep, Forms, Tasks & Looker Studio</div>
+            </div>
+            ${state.user ? `<button class="btn-primary" id="syncWorkspaceBtn">↻ Sync Live Calendar, Drive & Contacts</button>` : `<button class="btn-primary" id="wsSignInBtn">Sign in with Google</button>`}
+          </div>
+          <div class="grid-4">
+            <div class="glass tool-tile"><strong>Google Meet</strong><div class="muted">Instant video meetings</div><a class="btn-primary" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer">Start Meet ↗</a></div>
+            <div class="glass tool-tile"><strong>Google Calendar</strong><div class="muted">Events + auto Meet link</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><button class="btn-primary" id="createCalEventBtn">+ New Event</button><a class="btn-secondary" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">Open ↗</a></div></div>
+            <div class="glass tool-tile"><strong>Google Drive</strong><div class="muted">Shared cloud storage</div><a class="btn-secondary" href="https://drive.google.com" target="_blank" rel="noopener noreferrer">Open Drive ↗</a></div>
+            <div class="glass tool-tile"><strong>Google Contacts</strong><div class="muted">Sync & import to CRM</div><a class="btn-secondary" href="https://contacts.google.com" target="_blank" rel="noopener noreferrer">Contacts ↗</a></div>
+            <div class="glass tool-tile"><strong>Docs & Sheets</strong><div class="muted">Proposals & live models</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><a class="btn-secondary" href="https://docs.new" target="_blank" rel="noopener noreferrer">Doc ↗</a><a class="btn-secondary" href="https://sheets.new" target="_blank" rel="noopener noreferrer">Sheet ↗</a></div></div>
+            <div class="glass tool-tile"><strong>Slides & Forms</strong><div class="muted">Decks & lead capture</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><a class="btn-secondary" href="https://slides.new" target="_blank" rel="noopener noreferrer">Slide ↗</a><a class="btn-secondary" href="https://forms.new" target="_blank" rel="noopener noreferrer">Form ↗</a></div></div>
+            <div class="glass tool-tile"><strong>Keep & Tasks</strong><div class="muted">Quick notes & checklists</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><a class="btn-secondary" href="https://keep.google.com" target="_blank" rel="noopener noreferrer">Keep ↗</a><a class="btn-secondary" href="https://tasks.google.com" target="_blank" rel="noopener noreferrer">Tasks ↗</a></div></div>
+            <div class="glass tool-tile"><strong>Looker & Admin</strong><div class="muted">BI dashboards & org admin</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><a class="btn-secondary" href="https://lookerstudio.google.com" target="_blank" rel="noopener noreferrer">Looker ↗</a><a class="btn-secondary" href="https://admin.google.com" target="_blank" rel="noopener noreferrer">Admin ↗</a></div></div>
+          </div>
+        </div>
+
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Google Translate + Gemini 3.5 Flash-Lite Multilingual Engine</div>
+              <div class="muted">Instant translation for emails, contracts, and multilingual technical documents</div>
+            </div>
+            <a class="btn-secondary" href="https://translate.google.com" target="_blank" rel="noopener noreferrer">Open Google Translate ↗</a>
+          </div>
+          <div class="grid-2">
+            <div style="display:flex; flex-direction:column; gap:0.5rem;">
+              <textarea id="translateInput" rows="4" placeholder="Enter text in any language..."></textarea>
+              <div style="display:flex; gap:0.5rem;">
+                <select id="translateTargetLang">
+                  <option value="English">Target: English</option>
+                  <option value="Hindi">Target: Hindi</option>
+                  <option value="Marathi">Target: Marathi</option>
+                  <option value="German">Target: German</option>
+                  <option value="Chinese (Simplified)">Target: Chinese</option>
+                  <option value="Korean">Target: Korean</option>
+                  <option value="Arabic">Target: Arabic</option>
+                  <option value="Spanish">Target: Spanish</option>
+                  <option value="French">Target: French</option>
+                </select>
+                <button class="btn-primary" id="runTranslateBtn">✦ Translate</button>
+              </div>
+            </div>
+            <div class="terminal-box" id="translateOutput">Output will appear here via gemini-3.5-flash-lite.</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="glass panel">
+            <div class="section-title" style="margin-bottom:0.6rem;">Live Calendar Events</div>
+            ${!runtime.calendarEvents.length ? `<div class="muted">No synced events yet. Sign in & click Sync above.</div>` : runtime.calendarEvents.map(ev => `
+              <div class="glass panel" style="padding:0.65rem; margin-bottom:0.45rem;">
+                <strong>${esc(ev.summary || '(No Title)')}</strong>
+                <div class="muted" style="font-size:0.76rem;">${esc(ev.start?.dateTime || ev.start?.date || '')}</div>
+                ${ev.hangoutLink ? `<a class="btn-secondary" style="margin-top:0.35rem; font-size:0.74rem;" href="${esc(ev.hangoutLink)}" target="_blank">Join Meet ↗</a>` : ''}
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="glass panel">
+            <div class="section-title" style="margin-bottom:0.6rem;">Live Google Drive Files</div>
+            ${!runtime.driveFiles.length ? `<div class="muted">No Drive files synced yet.</div>` : runtime.driveFiles.map(f => `
+              <div class="glass panel" style="padding:0.65rem; margin-bottom:0.45rem; display:flex; justify-content:space-between; align-items:center; gap:0.4rem;">
+                <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><strong>${esc(f.name)}</strong></div>
+                ${f.webViewLink ? `<a class="btn-secondary" style="font-size:0.74rem;" href="${esc(f.webViewLink)}" target="_blank">Open ↗</a>` : ''}
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="glass panel">
+            <div class="section-title" style="margin-bottom:0.6rem;">Live Google Contacts</div>
+            ${!runtime.contactsList.length ? `<div class="muted">No Contacts synced yet.</div>` : runtime.contactsList.map((c, idx) => `
+              <div class="glass panel" style="padding:0.65rem; margin-bottom:0.45rem; display:flex; justify-content:space-between; align-items:center; gap:0.4rem;">
+                <div style="min-width:0;">
+                  <strong>${esc(c.name)}</strong>
+                  <div class="muted" style="font-size:0.74rem; overflow:hidden; text-overflow:ellipsis;">${esc(c.email || c.phone || '—')}</div>
+                </div>
+                <button class="btn-secondary" style="font-size:0.72rem; padding:0.25rem 0.55rem;" data-import-contact="${idx}">+ Lead</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderExtractor() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Multimodal Document, PDF & Image AI Extractor</div>
+              <div class="muted">Powered natively by <code>gemini-3.5-flash-lite</code> (PDF, PNG/JPG, CSV, TXT)</div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div style="display:flex; flex-direction:column; gap:0.6rem;">
+              <input type="file" id="mmFileInput" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.csv" />
+              <textarea id="mmPromptInput" rows="4" placeholder="Describe what to extract into a clean table for Excel/Docs..."></textarea>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn-primary" id="runMmExtractBtn">✦ Extract with 3.5 Flash-Lite</button>
+                <button class="btn-secondary" id="dlMmXlsBtn">⬇ Export Excel (.xls)</button>
+                <button class="btn-secondary" id="dlMmDocBtn">⬇ Export Doc (.doc)</button>
+              </div>
+            </div>
+            <div class="terminal-box" id="mmOutputBox">Upload a PDF, image, invoice, or manual and click Extract.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHRMS() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Employee DBMS & Organization Directory</div>
+              <div class="muted">Populated exclusively by real signed-in Google accounts and added team members</div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-primary" id="addEmpBtn">+ Add Employee</button>
+              <button class="btn-secondary" id="exportDbmsBtn">⬇ Export Excel (.xls)</button>
+            </div>
+          </div>
+          ${!state.employees.length ? `
+            <div class="empty-state muted">No employees added yet. Sign in with Google to register your profile, or add team members manually.</div>
+          ` : `
             <div class="table-wrap">
               <table>
-                <thead><tr><th>Timestamp (Millisecond)</th><th>Actor</th><th>Role</th><th>Action</th><th>Details</th></tr></thead>
+                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Title</th><th>Department</th><th>Manager</th><th>Status</th></tr></thead>
                 <tbody>
-                  ${state.auditTrail.map(a => `
+                  ${state.employees.map(e => `
                     <tr>
-                      <td style="font-family:var(--font-mono); font-size:0.78rem;">${a.ts}</td>
-                      <td>${a.actor}</td>
-                      <td>${a.role}</td>
-                      <td><span class="pill-tag">${a.action}</span></td>
-                      <td>${a.detail}</td>
+                      <td>${esc(e.id)}</td>
+                      <td><strong>${esc(e.name)}</strong></td>
+                      <td>${esc(e.email || '—')}</td>
+                      <td>${esc(e.title || '—')}</td>
+                      <td>${esc(e.dept || '—')}</td>
+                      <td>${esc(e.manager || '—')}</td>
+                      <td>${esc(e.status)}</td>
                     </tr>
                   `).join('')}
                 </tbody>
               </table>
             </div>
-          </div>
-        `;
-      }
+          `}
+        </div>
 
-      function renderMainView() {
-        const container = document.getElementById('mainView');
-        const map = {
-          news: renderNews,
-          crm: renderCRM,
-          workspace: renderWorkspace,
-          meet: renderMeet,
-          orgchat: renderOrgChat,
-          hrms: renderHRMS,
-          dbms: renderDBMS,
-          reports: renderReports,
-          memory: renderMemory,
-          audit: renderAudit
+        <div class="glass panel">
+          <div class="section-header">
+            <div class="section-title">Leave Requests & Approvals</div>
+            <button class="btn-primary" id="requestLeaveBtn">+ Request Leave</button>
+          </div>
+          ${!state.leaves.length ? `<div class="empty-state muted">No leave requests submitted yet.</div>` : `
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Employee</th><th>Type</th><th>Dates</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                  ${state.leaves.map(l => `
+                    <tr>
+                      <td>${esc(l.id)}</td>
+                      <td>${esc(l.employee)}</td>
+                      <td>${esc(l.type)}</td>
+                      <td>${esc(l.dates)}</td>
+                      <td><span class="pill-tag">${esc(l.status)}</span></td>
+                      <td>${l.status === 'Pending' ? `<button class="btn-primary" data-approve-leave="${l.id}">Approve</button>` : '—'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderReports() {
+      return `
+        <div class="grid-2">
+          <div class="glass panel">
+            <div class="section-header">
+              <div>
+                <div class="section-title">AI Reports & Executive Studio</div>
+                <div class="muted">Powered by <code>gemini-3.5-flash-lite</code></div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.55rem; margin-bottom:0.85rem;">
+              <input id="customReportPrompt" type="text" placeholder="Describe the report you want from your real CRM/HRMS data..." />
+              <div style="display:flex; gap:0.5rem;">
+                <select id="customReportFormat">
+                  <option value="doc">Word / Google Doc (.doc)</option>
+                  <option value="xls">Excel / Google Sheet (.xls)</option>
+                  <option value="pbi">Power BI Data Source (.pbids.json)</option>
+                  <option value="pdf">Printable PDF</option>
+                </select>
+                <button class="btn-primary" id="generateCustomReportBtn">✦ Generate</button>
+              </div>
+            </div>
+            <div id="aiReportPreview" class="terminal-box">Generated report preview appears here and exports automatically.</div>
+          </div>
+
+          <div class="glass panel">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Live CRM SQL & AI Code Terminal</div>
+                <div class="muted">Query real workspace tables or generate Python/SQL/HTML via Gemini 3.5 Flash-Lite</div>
+              </div>
+              <select id="termLangSelect" style="width:auto;">
+                <option value="SQL">SQL (Live Tables)</option>
+                <option value="AI_PYTHON">AI Python (3.5 Flash-Lite)</option>
+                <option value="AI_SQL">AI SQL Builder</option>
+                <option value="AI_HTML">AI HTML Widget</option>
+              </select>
+            </div>
+            <textarea id="termCodeInput" rows="4" style="font-family:var(--font-mono); margin-bottom:0.55rem;" placeholder="SELECT * FROM deals;"></textarea>
+            <button class="btn-primary" id="runTermBtn" style="margin-bottom:0.65rem;">▶ Execute</button>
+            <div class="terminal-box" id="termOutput">Available SQL tables: deals, leads, tasks, employees, leaves, auditTrail.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMemory() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">AI Memory & Custom Skills Registry</div>
+              <div class="muted">Saved rules automatically steer <code>gemini-3.5-flash-lite</code> across every module</div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:1rem;">
+            <input id="memTitleInput" type="text" placeholder="Rule / Skill Title" />
+            <div style="display:flex; gap:0.5rem;">
+              <input id="memInstructionInput" type="text" placeholder="Instruction for Gemini 3.5 Flash-Lite..." />
+              <button class="btn-primary" id="addMemBtn">Save</button>
+            </div>
+          </div>
+          ${!state.aiMemories.length ? `<div class="empty-state muted">No custom AI rules saved yet.</div>` : state.aiMemories.map(m => `
+            <div class="glass panel" style="margin-bottom:0.55rem; display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
+              <div><strong>${esc(m.title)}</strong><div class="muted">${esc(m.instruction)}</div></div>
+              <button class="btn-secondary" data-del-mem="${m.id}">Remove</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderAudit() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Immutable Real-Time Audit Trail</div>
+              <div class="muted">Millisecond-precision log of real workspace events</div>
+            </div>
+            <span class="pill-tag">${state.auditTrail.length} Events</span>
+          </div>
+          ${!state.auditTrail.length ? `<div class="empty-state muted">No actions recorded yet.</div>` : `
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Details</th></tr></thead>
+                <tbody>
+                  ${state.auditTrail.map(a => `
+                    <tr>
+                      <td style="font-family:var(--font-mono); font-size:0.77rem;">${esc(a.ts)}</td>
+                      <td>${esc(a.actor)}</td>
+                      <td><span class="pill-tag">${esc(a.action)}</span></td>
+                      <td>${esc(a.detail)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderMainView() {
+      const container = document.getElementById('mainView');
+      const views = {
+        news: renderNews,
+        crm: renderCRM,
+        gmail: renderGmail,
+        chat: renderChat,
+        workspace: renderWorkspace,
+        extractor: renderExtractor,
+        hrms: renderHRMS,
+        reports: renderReports,
+        memory: renderMemory,
+        audit: renderAudit
+      };
+      container.innerHTML = (views[state.activeTab] || renderNews)();
+      bindDynamicEvents();
+    }
+
+    // =========================================================================
+    // 6. MODALS & INTERACTIONS
+    // =========================================================================
+    function openPersonalizeNewsModal() {
+      const modal = document.getElementById('modalBackdrop');
+      const content = document.getElementById('modalContent');
+      modal.style.display = 'grid';
+      content.innerHTML = `
+        <div class="section-header">
+          <div class="section-title">Personalize News Categories & Topics</div>
+          <button class="btn-secondary" id="closeModalBtn">✕</button>
+        </div>
+        <div class="muted" style="margin-bottom:0.75rem;">Toggle categories or add custom topics. Saved automatically across refreshes.</div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.45rem; margin-bottom:1rem;">
+          ${NEWS_CATEGORIES.map(c => {
+            const active = state.newsPrefs.categories.includes(c.id);
+            return `<button class="glass-pill ${active ? 'active' : ''}" style="padding:0.45rem 0.85rem;" data-toggle-cat="${c.id}">${c.label}</button>`;
+          }).join('')}
+        </div>
+        <div style="margin-bottom:0.45rem;"><strong>Custom Topics / Keywords</strong></div>
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+          <input id="customTopicInput" type="text" placeholder="Add any topic or industry keyword..." />
+          <button class="btn-primary" id="addCustomTopicBtn">Add</button>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;">
+          ${state.newsPrefs.customTopics.map(t => `<span class="pill-tag">${esc(t)} <button style="background:none;border:none;color:inherit;cursor:pointer;margin-left:0.25rem;" data-rm-topic="${esc(t)}">✕</button></span>`).join('') || '<span class="muted">No custom keywords yet.</span>'}
+        </div>
+        <button class="btn-primary" id="applyNewsPrefsBtn" style="width:100%;">Save & Refresh Personalized Feed</button>
+      `;
+
+      document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
+      content.querySelectorAll('[data-toggle-cat]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.toggleCat;
+          const idx = state.newsPrefs.categories.indexOf(id);
+          if (idx >= 0) state.newsPrefs.categories.splice(idx, 1);
+          else state.newsPrefs.categories.push(id);
+          saveState();
+          openPersonalizeNewsModal();
         };
-        container.innerHTML = (map[state.activeTab] || renderNews)();
-        bindDynamicEvents();
+      });
+      document.getElementById('addCustomTopicBtn').onclick = () => {
+        const val = document.getElementById('customTopicInput').value.trim();
+        if (val && !state.newsPrefs.customTopics.includes(val)) {
+          state.newsPrefs.customTopics.push(val);
+          saveState();
+          openPersonalizeNewsModal();
+        }
+      };
+      content.querySelectorAll('[data-rm-topic]').forEach(btn => {
+        btn.onclick = () => {
+          state.newsPrefs.customTopics = state.newsPrefs.customTopics.filter(t => t !== btn.dataset.rmTopic);
+          saveState();
+          openPersonalizeNewsModal();
+        };
+      });
+      document.getElementById('applyNewsPrefsBtn').onclick = () => {
+        modal.style.display = 'none';
+        logAction('NEWS_PERSONALIZE', `Categories: ${state.newsPrefs.categories.join(',')}; Topics: ${state.newsPrefs.customTopics.join(',')}`);
+        loadLiveNews();
+      };
+    }
+
+    function openConnectModal(notice = '') {
+      const modal = document.getElementById('modalBackdrop');
+      const content = document.getElementById('modalContent');
+      modal.style.display = 'grid';
+      content.innerHTML = `
+        <div class="section-header">
+          <div class="section-title">Real Google Auth, Firebase & Gemini 3.5 Flash-Lite Setup</div>
+          <button class="btn-secondary" id="closeModalBtn">✕</button>
+        </div>
+        ${notice ? `<div class="glass panel" style="padding:0.75rem; margin-bottom:0.85rem; border-color:var(--s-300); font-size:0.83rem;">${esc(notice)}</div>` : ''}
+        <div style="display:flex; flex-direction:column; gap:0.85rem;">
+          <div>
+            <label style="font-size:0.82rem; font-weight:600;">1. Firebase Web Config JSON (for Real Google Account Sign-In + Persistent Login + Firestore Sync)</label>
+            <textarea id="cfgFirebaseJson" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}' style="margin-top:0.3rem; font-family:var(--font-mono); font-size:0.78rem;">${esc(config.firebaseConfigJson)}</textarea>
+          </div>
+          <div>
+            <label style="font-size:0.82rem; font-weight:600;">2. OR Direct Google Cloud OAuth 2.0 Web Client ID</label>
+            <input id="cfgOAuthClient" type="text" value="${esc(config.googleOAuthClientId)}" placeholder="1234567890-xxxx.apps.googleusercontent.com" style="margin-top:0.3rem;" />
+          </div>
+          <div>
+            <label style="font-size:0.82rem; font-weight:600;">3. Google AI Studio API Key (for <code>gemini-3.5-flash-lite</code>)</label>
+            <input id="cfgGeminiKey" type="password" value="${esc(config.geminiApiKey)}" placeholder="AIzaSy..." style="margin-top:0.3rem;" />
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn-primary" id="saveAndSignInBtn" style="flex:1;">Save & Sign in with Google</button>
+            <button class="btn-secondary" id="saveCloudConfigBtn">Save Only</button>
+            <button class="btn-secondary" id="clearCloudConfigBtn">Clear</button>
+          </div>
+          <div class="muted" style="font-size:0.75rem;">Tip: You can also paste your Firebase config once into <code>INLINE_FIREBASE_CONFIG</code> inside <code>index.html</code> so every visitor can click "Sign in with Google" immediately.</div>
+        </div>
+      `;
+
+      const persistFields = async () => {
+        const fbRaw = document.getElementById('cfgFirebaseJson').value.trim();
+        if (fbRaw) {
+          try { JSON.parse(fbRaw); }
+          catch { alert('Firebase Config must be valid JSON (use double quotes around keys like "apiKey").'); return false; }
+        }
+        config.firebaseConfigJson = fbRaw;
+        config.googleOAuthClientId = document.getElementById('cfgOAuthClient').value.trim();
+        config.geminiApiKey = document.getElementById('cfgGeminiKey').value.trim();
+        saveConfig();
+        await initFirebaseIfConfigured();
+        updateCloudIndicator();
+        logAction('API_SETUP_SAVED', 'Saved Auth/AI configuration');
+        return true;
+      };
+
+      document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
+      document.getElementById('saveCloudConfigBtn').onclick = async () => {
+        if (await persistFields()) modal.style.display = 'none';
+      };
+      document.getElementById('saveAndSignInBtn').onclick = async () => {
+        if (await persistFields()) {
+          modal.style.display = 'none';
+          authorizeWithGoogle();
+        }
+      };
+      document.getElementById('clearCloudConfigBtn').onclick = () => {
+        config = { geminiApiKey: '', firebaseConfigJson: '', googleOAuthClientId: '' };
+        saveConfig();
+        updateCloudIndicator();
+        modal.style.display = 'none';
+      };
+    }
+
+    function openAccountModal() {
+      const modal = document.getElementById('modalBackdrop');
+      const content = document.getElementById('modalContent');
+      modal.style.display = 'grid';
+      content.innerHTML = `
+        <div class="section-header">
+          <div class="section-title">Authorized Google Account</div>
+          <button class="btn-secondary" id="closeModalBtn">✕</button>
+        </div>
+        <div class="glass panel" style="margin-bottom:0.85rem; display:flex; align-items:center; gap:0.85rem;">
+          ${state.user.photo ? `<img src="${esc(state.user.photo)}" style="width:48px;height:48px;border-radius:50%;border:1px solid var(--s-200);" />` : ''}
+          <div>
+            <strong>${esc(state.user.name)}</strong>
+            <div class="muted">${esc(state.user.email)}</div>
+            <div class="muted" style="font-size:0.74rem;">${esc(state.user.provider)} • Persisted across refreshes</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <button class="btn-primary" id="switchAccountBtn">Switch Google Account / Refresh Workspace Token</button>
+          <button class="btn-secondary" id="signOutBtn">Sign Out</button>
+        </div>
+      `;
+      document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
+      document.getElementById('switchAccountBtn').onclick = () => { modal.style.display = 'none'; authorizeWithGoogle(); };
+      document.getElementById('signOutBtn').onclick = () => { modal.style.display = 'none'; signOutGoogle(); };
+    }
+
+    function bindDynamicEvents() {
+      // News
+      const pBtn = document.getElementById('personalizeNewsBtn');
+      if (pBtn) pBtn.onclick = openPersonalizeNewsModal;
+      const rBtn = document.getElementById('refreshNewsBtn') || document.getElementById('retryNewsBtn');
+      if (rBtn) rBtn.onclick = loadLiveNews;
+
+      const digestBtn = document.getElementById('aiNewsBriefBtn');
+      if (digestBtn) {
+        digestBtn.onclick = async () => {
+          const box = document.getElementById('aiNewsDigestBox');
+          box.style.display = 'block';
+          box.textContent = 'Generating executive news brief via gemini-3.5-flash-lite...';
+          const headlines = runtime.newsItems.slice(0, 14).map(n => `- [${n.category}] ${n.title} (${n.source})`).join('\n');
+          box.textContent = await callGemini35FlashLite(`Create a sharp 5-bullet executive brief from these live headlines:\n${headlines}`);
+        };
       }
 
-      function bindDynamicEvents() {
-        // News Like, Comment, Share
-        document.querySelectorAll('[data-like]').forEach(btn => {
-          btn.onclick = () => {
-            const item = state.news.find(n => n.id === btn.dataset.like);
-            if (!item) return;
-            item.liked = !item.liked;
-            item.likes += item.liked ? 1 : -1;
-            logAction('NEWS_LIKE', `${item.liked ? 'Liked' : 'Unliked'}: ${item.title}`);
-            renderAll();
-          };
-        });
+      document.querySelectorAll('[data-like-news]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.likeNews;
+          state.newsLikes[id] = !state.newsLikes[id];
+          saveState();
+          renderMainView();
+        };
+      });
 
-        document.querySelectorAll('[data-comment]').forEach(btn => {
-          btn.onclick = () => {
-            const item = state.news.find(n => n.id === btn.dataset.comment);
-            const txt = prompt('Add comment to "' + item.title + '":');
-            if (txt && txt.trim()) {
-              item.comments.push(txt.trim());
-              logAction('NEWS_COMMENT', `Commented on ${item.id}: ${txt.trim()}`);
-              renderAll();
-            }
-          };
-        });
-
-        document.querySelectorAll('[data-share]').forEach(btn => {
-          btn.onclick = () => {
-            const item = state.news.find(n => n.id === btn.dataset.share);
-            logAction('NEWS_SHARE', `Shared story: ${item.title}`);
-            alert('Shareable QUASAR-9 link copied for: ' + item.title);
-          };
-        });
-
-        // CRM Deals
-        const addDealBtn = document.getElementById('addDealBtn');
-        if (addDealBtn) {
-          addDealBtn.onclick = () => {
-            const client = prompt('Client organization name:');
-            const value = prompt('Deal value (e.g., $45,000):', '$45,000');
-            if (client) {
-              const id = 'DL-' + (100 + state.deals.length + 1);
-              state.deals.unshift({ id, client, owner: state.user.name, stage: 'Discovery', value: value || '$25,000', probability: '45%' });
-              logAction('CRM_DEAL_CREATE', `Created deal ${id} for ${client}`);
-              renderAll();
-            }
-          };
-        }
-
-        document.querySelectorAll('[data-advance-deal]').forEach(btn => {
-          btn.onclick = () => {
-            const stages = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won'];
-            const deal = state.deals.find(d => d.id === btn.dataset.advanceDeal);
-            const next = stages[(stages.indexOf(deal.stage) + 1) % stages.length];
-            deal.stage = next;
-            logAction('CRM_DEAL_STAGE', `${deal.id} moved to ${next}`);
-            renderAll();
-          };
-        });
-
-        // Email Extractor & Composer
-        const composeBtn = document.getElementById('composeEmailBtn');
-        if (composeBtn) {
-          composeBtn.onclick = () => {
-            const to = prompt('Recipient Gmail address:');
-            const subject = prompt('Email Subject:');
-            const body = prompt('Email Body:');
-            if (to && subject) {
-              state.emails.unshift({ id: 'EM-' + (state.emails.length + 1), from: state.user.email + ' → ' + to, subject, date: nowStamp().slice(0, 16), body: body || '' });
-              logAction('GMAIL_SENT', `Sent email "${subject}" to ${to}`);
-              renderAll();
-            }
-          };
-        }
-
-        document.querySelectorAll('[data-extract]').forEach(btn => {
-          btn.onclick = () => {
-            const em = state.emails.find(e => e.id === btn.dataset.extract);
-            const fmt = btn.dataset.fmt;
-            const memNotes = state.aiMemories.map(m => `${m.title}: ${m.instruction}`).join(' | ');
-            const summary = `QUASAR-9 AI EMAIL EXTRACTION\nSubject: ${em.subject}\nFrom: ${em.from}\nDate: ${em.date}\nSummary: ${em.body}\nApplied Memory Rules: ${memNotes}`;
-            if (fmt === 'xls') downloadFile(`${em.id}_extraction.xls`, `Subject\tFrom\tDate\tSummary\n${em.subject}\t${em.from}\t${em.date}\t${em.body}`, 'application/vnd.ms-excel');
-            if (fmt === 'doc') downloadFile(`${em.id}_extraction.doc`, summary, 'application/msword');
-            if (fmt === 'pbi') downloadFile(`${em.id}_dashboard.pbids.json`, JSON.stringify({ version: '0.1', source: 'QUASAR-9 AI Extractor', email: em, appliedSkills: state.aiMemories }, null, 2), 'application/json');
-            if (fmt === 'pdf') {
-              logAction('PDF_PRINT', `Generated printable PDF summary for ${em.id}`);
-              window.print();
-            }
-          };
-        });
-
-        // Google Meet
-        const startMeet = document.getElementById('startMeetBtn');
-        if (startMeet) {
-          startMeet.onclick = () => {
-            const code = 'qsr-' + Math.random().toString(36).substring(2, 6) + '-' + Math.random().toString(36).substring(2, 5);
-            state.meetings.unshift({ id: code, title: 'Instant Executive Meet', host: state.user.name, time: 'Live Now' });
-            logAction('GMEET_START', `Started embedded G-Meet room ${code}`);
-            renderAll();
-            const stage = document.getElementById('meetStage');
-            if (stage) {
-              stage.innerHTML = `<strong>🟢 Live Embedded Google Meet Room: ${code}</strong><div class="muted" style="margin:0.4rem 0;">Audio & HD Video Stream Active Inside QUASAR-9 • Invite Link: https://meet.google.com/${code}</div><button class="btn-secondary" onclick="navigator.clipboard && navigator.clipboard.writeText('https://meet.google.com/${code}')">Copy Invite Link</button>`;
-            }
-          };
-        }
-
-        const joinMeet = document.getElementById('joinMeetBtn');
-        if (joinMeet) {
-          joinMeet.onclick = () => {
-            const link = prompt('Paste Google Meet invite link or room code:');
-            if (link) {
-              logAction('GMEET_JOIN', `Joined G-Meet via ${link}`);
-              const stage = document.getElementById('meetStage');
-              if (stage) stage.innerHTML = `<strong>🟢 Connected to Embedded G-Meet: ${link}</strong><div class="muted">Single-pane conference session active.</div>`;
-            }
-          };
-        }
-
-        document.querySelectorAll('[data-launch-room]').forEach(btn => {
-          btn.onclick = () => {
-            const room = btn.dataset.launchRoom;
-            logAction('GMEET_ENTER', `Entered room ${room}`);
-            const stage = document.getElementById('meetStage');
-            if (stage) stage.innerHTML = `<strong>🟢 Connected to Room ${room}</strong><div class="muted">Encrypted WebRTC bridge active inside QUASAR-9.</div>`;
-          };
-        });
-
-        // Org & Encrypted Chat
-        const sendOrg = document.getElementById('sendOrgChatBtn');
-        if (sendOrg) {
-          sendOrg.onclick = () => {
-            const inp = document.getElementById('orgChatInput');
-            if (inp && inp.value.trim()) {
-              state.orgMessages.push({ sender: `${state.user.name} (${state.user.role})`, time: nowStamp().slice(11, 16), text: inp.value.trim() });
-              logAction('ORG_CHAT', `Posted message to #general`);
-              renderAll();
-            }
-          };
-        }
-
-        const sendE2e = document.getElementById('sendE2eChatBtn');
-        if (sendE2e) {
-          sendE2e.onclick = async () => {
-            const inp = document.getElementById('e2eChatInput');
-            if (inp && inp.value.trim()) {
-              const text = inp.value.trim();
-              let hexTag = Math.random().toString(16).slice(2, 14);
-              try {
-                if (window.crypto && crypto.subtle) {
-                  const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt']);
-                  const iv = crypto.getRandomValues(new Uint8Array(12));
-                  const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(text));
-                  hexTag = Array.from(new Uint8Array(enc).slice(0, 6)).map(b => b.toString(16).padStart(2, '0')).join('');
-                }
-              } catch (e) {}
-              state.encryptedMessages.push({ sender: state.user.name, cipher: `AES256GCM::${hexTag}::Verified`, plain: text });
-              logAction('E2E_CHAT', 'Sent AES-256-GCM encrypted message');
-              renderAll();
-            }
-          };
-        }
-
-        // HRMS
-        const reqLeave = document.getElementById('requestLeaveBtn');
-        if (reqLeave) {
-          reqLeave.onclick = () => {
-            const dates = prompt('Leave dates (e.g., 2026-12-15 to 2026-12-22):');
-            const type = prompt('Leave type (Annual / Exam / Medical):', 'Annual Leave');
-            if (dates) {
-              const id = 'LV-' + (10 + state.leaves.length + 1);
-              state.leaves.unshift({ id, employee: state.user.name, type: type || 'Annual Leave', dates, status: 'Pending' });
-              logAction('LEAVE_REQUEST', `Submitted ${id} (${dates})`);
-              renderAll();
-            }
-          };
-        }
-
-        document.querySelectorAll('[data-approve-leave]').forEach(btn => {
-          btn.onclick = () => {
-            const lv = state.leaves.find(l => l.id === btn.dataset.approveLeave);
-            if (lv) {
-              lv.status = 'Approved';
-              logAction('LEAVE_APPROVE', `Approved leave ${lv.id} for ${lv.employee}`);
-              renderAll();
-            }
-          };
-        });
-
-        // Employee DBMS
-        const addEmp = document.getElementById('addEmpBtn');
-        if (addEmp) {
-          addEmp.onclick = () => {
-            const name = prompt('Full Name:');
-            const role = prompt('Role (Owner/Director/Manager/Admin/Developer/Agent):', 'Developer');
-            const dept = prompt('Department:', 'Platform Engineering');
-            if (name) {
-              const id = 'EMP-00' + (state.employees.length + 1);
-              state.employees.push({ id, name, role: role || 'Agent', dept: dept || 'Operations', email: name.toLowerCase().replace(/\s+/g, '.') + '@quasar9.io', manager: 'Karan Lavate', salary: '$7,200', status: 'Active' });
-              logAction('DBMS_ADD_EMP', `Added employee ${id} (${name})`);
-              renderAll();
-            }
-          };
-        }
-
-        const expDbms = document.getElementById('exportDbmsBtn');
-        if (expDbms) {
-          expDbms.onclick = () => {
-            const rows = ['ID\tName\tRole\tDepartment\tEmail\tManager\tSalary\tStatus']
-              .concat(state.employees.map(e => `${e.id}\t${e.name}\t${e.role}\t${e.dept}\t${e.email}\t${e.manager}\t${e.salary}\t${e.status}`));
-            downloadFile('QUASAR9_Employee_DBMS.xls', rows.join('\n'), 'application/vnd.ms-excel');
-          };
-        }
-
-        // Reports & Terminal
-        document.querySelectorAll('[data-gen-preset]').forEach(btn => {
-          btn.onclick = () => {
-            const title = btn.dataset.genPreset;
-            if (title.includes('Power BI')) downloadFile('QUASAR9_Q4_Forecast.pbids.json', JSON.stringify({ model: 'Google Gemini 2.5 Pro', title, deals: state.deals }, null, 2), 'application/json');
-            else if (title.includes('Excel')) downloadFile('QUASAR9_Payroll_Ledger.xls', 'Employee\tRole\tSalary\n' + state.employees.map(e => `${e.name}\t${e.role}\t${e.salary}`).join('\n'), 'application/vnd.ms-excel');
-            else downloadFile('QUASAR9_Board_Governance.doc', `${title}\nGenerated by QUASAR-9 AI\nActive Deals: ${state.deals.length}\nActive Staff: ${state.employees.length}`, 'application/msword');
-          };
-        });
-
-        const genCustom = document.getElementById('generateCustomReportBtn');
-        if (genCustom) {
-          genCustom.onclick = () => {
-            const promptText = document.getElementById('customReportPrompt').value || 'Executive Summary';
-            const fmt = document.getElementById('customReportFormat').value;
-            const mem = state.aiMemories.map(m => `- ${m.title}: ${m.instruction}`).join('\n');
-            const body = `QUASAR-9 CUSTOM AI REPORT\nPrompt: ${promptText}\nApplied Memory & Skills:\n${mem}\n\nPipeline Deals: ${state.deals.length}\nEmployees: ${state.employees.length}`;
-            if (fmt === 'xls') downloadFile('QUASAR9_Custom_Report.xls', body, 'application/vnd.ms-excel');
-            else if (fmt === 'doc') downloadFile('QUASAR9_Custom_Report.doc', body, 'application/msword');
-            else if (fmt === 'pbi') downloadFile('QUASAR9_Custom_Dashboard.pbids.json', JSON.stringify({ prompt: promptText, memories: state.aiMemories, deals: state.deals }, null, 2), 'application/json');
-            else { logAction('REPORT_PDF', promptText); window.print(); }
-          };
-        }
-
-        const runTerm = document.getElementById('runTermBtn');
-        if (runTerm) {
-          runTerm.onclick = () => {
-            const lang = document.getElementById('termLangSelect').value;
-            const code = document.getElementById('termCodeInput').value;
-            const out = document.getElementById('termOutput');
-            logAction('TERMINAL_EXEC', `Ran ${lang} snippet`);
-            if (lang === 'SQL') {
-              out.textContent = `[SQL Engine — ${nowStamp()}]\nExecuted: ${code}\n\n` + state.employees.map(e => `${e.id} | ${e.name} | ${e.role} | ${e.dept} | ${e.salary}`).join('\n');
-            } else if (lang === 'Python') {
-              out.textContent = `[Python 3.12 Runtime — ${nowStamp()}]\n>>> ${code}\nDataFrame(rows=${state.employees.length}, deals=${state.deals.length}, status='OK')`;
-            } else {
-              out.textContent = `[HTML Sandbox — ${nowStamp()}]\nParsed ${code.length} bytes cleanly with 0 DOM errors.`;
-            }
-          };
-        }
-
-        // AI Memory
-        const addMem = document.getElementById('addMemBtn');
-        if (addMem) {
-          addMem.onclick = () => {
-            const title = document.getElementById('memTitleInput').value.trim();
-            const instruction = document.getElementById('memInstructionInput').value.trim();
-            if (title && instruction) {
-              state.aiMemories.push({ id: Date.now(), title, instruction });
-              logAction('AI_MEMORY_ADD', `Saved AI memory "${title}"`);
-              renderAll();
-            }
-          };
-        }
-
-        document.querySelectorAll('[data-del-mem]').forEach(btn => {
-          btn.onclick = () => {
-            state.aiMemories = state.aiMemories.filter(m => String(m.id) !== btn.dataset.delMem);
-            logAction('AI_MEMORY_DELETE', `Removed AI memory ID ${btn.dataset.delMem}`);
-            renderAll();
-          };
-        });
-      }
-
-      function renderAll() {
-        applyTheme();
-        document.getElementById('roleSelect').value = state.user.role;
-        document.getElementById('authLabel').textContent = state.user.signedIn ? state.user.name.split(' ')[0] : 'Sign In';
-        document.getElementById('notifCount').textContent = state.notifications.length;
-        renderSidebar();
-        renderMainView();
-        saveState();
-      }
-
-      // Header Controls
-      document.getElementById('menuToggle').onclick = () => {
-        document.getElementById('sidebarNav').classList.toggle('collapsed');
-      };
-
-      document.getElementById('roleSelect').onchange = (e) => {
-        state.user.role = e.target.value;
-        logAction('ROLE_SWITCH', `Switched active role to ${state.user.role}`);
-        renderAll();
-      };
-
-      document.getElementById('globalSearch').oninput = (e) => {
-        const q = e.target.value.trim().toLowerCase();
-        const overlay = document.getElementById('searchOverlay');
-        if (!q) {
-          overlay.style.display = 'none';
-          return;
-        }
-        const matches = state.employees.filter(emp =>
-          emp.name.toLowerCase().includes(q) ||
-          emp.role.toLowerCase().includes(q) ||
-          emp.dept.toLowerCase().includes(q)
-        );
-        overlay.style.display = 'block';
-        overlay.innerHTML = `<strong>Directory Matches (${matches.length}):</strong> ` +
-          (matches.length ? matches.map(m => `<span class="pill-tag" style="margin-left:0.4rem;">${m.name} — ${m.role} (${m.dept})</span>`).join('') : '<span class="muted">No matching team members found.</span>');
-      };
-
-      document.getElementById('notifBtn').onclick = () => {
-        const modal = document.getElementById('modalBackdrop');
-        const content = document.getElementById('modalContent');
-        modal.style.display = 'grid';
-        content.innerHTML = `
-          <div class="section-header">
-            <div class="section-title">Real-Time Alerts & Notifications</div>
-            <button class="btn-secondary" id="closeModalBtn">✕</button>
-          </div>
-          ${state.notifications.map(n => `<div class="glass panel" style="margin-bottom:0.5rem;">• ${n}</div>`).join('')}
-        `;
-        document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
-      };
-
-      document.getElementById('themeBtn').onclick = () => {
-        const modal = document.getElementById('modalBackdrop');
-        const content = document.getElementById('modalContent');
-        modal.style.display = 'grid';
-        content.innerHTML = `
-          <div class="section-header">
-            <div class="section-title">Liquid Glass Theme Studio</div>
-            <button class="btn-secondary" id="closeModalBtn">✕</button>
-          </div>
-          <div class="muted" style="margin-bottom:0.75rem;">92% Transparent • 5px Blur • Full 10-Shade Spectrum</div>
-          <div class="grid-2" style="margin-bottom:0.85rem;">
-            <button class="glass-pill ${state.theme === 'ios27' ? 'active' : ''}" style="padding:0.65rem;" data-set-theme="ios27">iOS 27 Liquid Glass</button>
-            <button class="glass-pill ${state.theme === 'gemini' ? 'active' : ''}" style="padding:0.65rem;" data-set-theme="gemini">Google Gemini</button>
-            <button class="glass-pill ${state.theme === 'oneui' ? 'active' : ''}" style="padding:0.65rem;" data-set-theme="oneui">Samsung One UI</button>
-            <button class="glass-pill ${state.theme === 'harmonyos' ? 'active' : ''}" style="padding:0.65rem;" data-set-theme="harmonyos">Honor HarmonyOS</button>
-          </div>
-          <div class="grid-2">
-            <button class="glass-pill ${state.mode === 'dark' ? 'active' : ''}" style="padding:0.6rem;" data-set-mode="dark">Dark Mode</button>
-            <button class="glass-pill ${state.mode === 'light' ? 'active' : ''}" style="padding:0.6rem;" data-set-mode="light">Light Mode</button>
-          </div>
-        `;
-        document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
-        content.querySelectorAll('[data-set-theme]').forEach(b => {
-          b.onclick = () => {
-            state.theme = b.dataset.setTheme;
-            logAction('THEME_CHANGE', `Selected theme ${state.theme}`);
-            renderAll();
-            document.getElementById('themeBtn').click();
-          };
-        });
-        content.querySelectorAll('[data-set-mode]').forEach(b => {
-          b.onclick = () => {
-            state.mode = b.dataset.setMode;
-            logAction('MODE_CHANGE', `Switched to ${state.mode} mode`);
-            renderAll();
-            document.getElementById('themeBtn').click();
-          };
-        });
-      };
-
-      document.getElementById('googleAuthBtn').onclick = () => {
-        if (!state.user.signedIn) {
-          state.user.signedIn = true;
-          state.user.name = 'Karan Lavate';
-          state.user.email = 'lavatekaran13@gmail.com';
-          logAction('GOOGLE_OAUTH_LOGIN', 'Signed in via 1-Click Google OAuth');
-        } else {
-          state.user.signedIn = false;
-          state.user.name = 'Guest Explorer';
-          state.user.email = 'guest@quasar9.io';
-          logAction('GOOGLE_OAUTH_LOGOUT', 'Signed out of Google OAuth session');
-        }
-        renderAll();
-      };
-
-      // Floating AI Copilot
-      const aiDrawer = document.getElementById('aiDrawer');
-      document.getElementById('fabAiBtn').onclick = () => {
-        aiDrawer.style.display = aiDrawer.style.display === 'none' ? 'block' : 'none';
-      };
-      document.getElementById('closeAiDrawer').onclick = () => {
-        aiDrawer.style.display = 'none';
-      };
-      document.getElementById('aiSendBtn').onclick = () => {
-        const inp = document.getElementById('aiPromptInput');
-        const log = document.getElementById('aiChatLog');
-        const q = inp.value.trim();
-        if (!q) return;
-        const activeSkills = state.aiMemories.map(m => m.title).join(', ') || 'Default Baseline';
-        log.textContent += `\n> User: ${q}\n[Gemini 2.5 Pro | Skills: ${activeSkills}]: Executed across QUASAR-9 (${state.deals.length} deals, ${state.employees.length} staff, ${state.auditTrail.length} audit logs verified).\n`;
-        inp.value = '';
-        logAction('AI_COPILOT_QUERY', q);
-      };
-
-      // Dense Multi-Layer Parallax Technical Vector Canvas
-      function initVectorCanvas() {
-        const canvas = document.getElementById('vector-canvas');
-        const ctx = canvas.getContext('2d');
-        let w = (canvas.width = window.innerWidth);
-        let h = (canvas.height = window.innerHeight);
-
-        window.addEventListener('resize', () => {
-          w = canvas.width = window.innerWidth;
-          h = canvas.height = window.innerHeight;
-        });
-
-        const count = w < 768 ? 85 : 145;
-        const kinds = ['stack', 'hex', 'node', 'ring', 'glyph'];
-        const glyphs = ['01', 'SQL', 'API', 'P2P', 'E2E', 'AI', 'DB', '9.0'];
-        const particles = Array.from({ length: count }, (_, i) => ({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.55,
-          vy: (Math.random() - 0.5) * 0.55,
-          size: 8 + Math.random() * 14,
-          kind: kinds[i % kinds.length],
-          glyph: glyphs[i % glyphs.length],
-          rot: Math.random() * Math.PI * 2
-        }));
-
-        function getShade(varName, fallback) {
-          return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
-        }
-
-        function draw() {
-          ctx.clearRect(0, 0, w, h);
-          const c1 = getShade('--s-300', '#38bdf8');
-          const c2 = getShade('--s-500', '#0a84ff');
-          const c3 = getShade('--s-200', '#7dd3fc');
-
-          for (let i = 0; i < particles.length; i++) {
-            const p = particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.rot += 0.004;
-            if (p.x < -30) p.x = w + 30;
-            if (p.x > w + 30) p.x = -30;
-            if (p.y < -30) p.y = h + 30;
-            if (p.y > h + 30) p.y = -30;
-
-            for (let j = i + 1; j < particles.length; j++) {
-              const q = particles[j];
-              const dx = p.x - q.x;
-              const dy = p.y - q.y;
-              const dist = Math.hypot(dx, dy);
-              if (dist < 115) {
-                ctx.strokeStyle = c2;
-                ctx.globalAlpha = (1 - dist / 115) * 0.28;
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(q.x, q.y);
-                ctx.stroke();
-              }
-            }
-
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            ctx.strokeStyle = i % 2 === 0 ? c1 : c3;
-            ctx.fillStyle = c1;
-            ctx.globalAlpha = 0.42;
-            ctx.lineWidth = 1.1;
-
-            if (p.kind === 'stack') {
-              for (let s = -1; s <= 1; s++) {
-                ctx.strokeRect(-p.size * 0.6, s * 5 - 2, p.size * 1.2, 3.5);
-              }
-            } else if (p.kind === 'hex') {
-              ctx.beginPath();
-              for (let k = 0; k < 6; k++) {
-                const ang = (Math.PI / 3) * k;
-                const rx = Math.cos(ang) * p.size * 0.75;
-                const ry = Math.sin(ang) * p.size * 0.75;
-                k === 0 ? ctx.moveTo(rx, ry) : ctx.lineTo(rx, ry);
-              }
-              ctx.closePath();
-              ctx.stroke();
-            } else if (p.kind === 'ring') {
-              ctx.beginPath();
-              ctx.arc(0, 0, p.size * 0.7, 0, Math.PI * 2);
-              ctx.stroke();
-            } else if (p.kind === 'glyph') {
-              ctx.font = '600 10px JetBrains Mono, monospace';
-              ctx.fillText(p.glyph, -10, 4);
-            } else {
-              ctx.beginPath();
-              ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
-              ctx.fill();
-            }
-            ctx.restore();
+      document.querySelectorAll('[data-comment-news]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.commentNews;
+          const txt = prompt('Add your note on this article:');
+          if (txt && txt.trim()) {
+            state.newsComments[id] = state.newsComments[id] || [];
+            state.newsComments[id].push(txt.trim());
+            logAction('NEWS_NOTE', txt.trim());
+            renderMainView();
           }
-          requestAnimationFrame(draw);
-        }
-        draw();
+        };
+      });
+
+      // CRM
+      const addDealHandler = () => {
+        const client = prompt('Client / Account Name:');
+        if (!client || !client.trim()) return;
+        const amount = Number(prompt('Deal Value in USD (numbers only):', '')) || 0;
+        const probability = Number(prompt('Win Probability % (0-100):', '')) || 0;
+        const id = 'DL-' + String(state.deals.length + 1).padStart(3, '0');
+        state.deals.unshift({
+          id,
+          client: client.trim(),
+          owner: state.user?.name || '',
+          stage: 'Lead / Discovery',
+          amount,
+          probability,
+          notes: []
+        });
+        logAction('CRM_DEAL_ADD', `${id} ${client.trim()} ($${amount})`);
+        renderAll();
+      };
+      ['addDealBtn', 'emptyAddDealBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = addDealHandler;
+      });
+
+      const toggleView = document.getElementById('toggleCrmViewBtn');
+      if (toggleView) {
+        toggleView.onclick = () => {
+          state.crmView = state.crmView === 'table' ? 'kanban' : 'table';
+          saveState();
+          renderMainView();
+        };
       }
 
-      logAction('SYSTEM_BOOT', 'QUASAR-9 initialized cleanly');
-      initVectorCanvas();
-      renderAll();
-    })();
+      const aiScoreBtn = document.getElementById('aiScoreDealsBtn');
+      if (aiScoreBtn) {
+        aiScoreBtn.onclick = async () => {
+          const box = document.getElementById('aiDealCoachBox');
+          box.style.display = 'block';
+          box.textContent = 'Running gemini-3.5-flash-lite pipeline diagnostics...';
+          box.textContent = await callGemini35FlashLite(
+            'Analyze all active deals, notes, and leads in my workspace. Score deal health, flag stalled risks, and list exact next actions.',
+            { thinkingLevel: 'medium' }
+          );
+        };
+      }
+
+      const impBtn = document.getElementById('importCsvBtn');
+      const csvInp = document.getElementById('csvFileInput');
+      if (impBtn && csvInp) {
+        impBtn.onclick = () => csvInp.click();
+        csvInp.onchange = async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const lines = (await file.text()).split(/\r?\n/).filter(Boolean);
+          lines.slice(1).forEach(line => {
+            const [client, amount, probability, stage] = line.split(',').map(s => s?.trim());
+            if (client) {
+              state.deals.unshift({
+                id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
+                client,
+                owner: state.user?.name || '',
+                stage: stage || 'Lead / Discovery',
+                amount: Number(amount) || 0,
+                probability: Number(probability) || 0,
+                notes: []
+              });
+            }
+          });
+          logAction('CRM_CSV_IMPORT', `Imported ${Math.max(0, lines.length - 1)} rows`);
+          renderAll();
+        };
+      }
+
+      const expDeals = document.getElementById('exportDealsBtn');
+      if (expDeals) {
+        expDeals.onclick = () => {
+          const rows = ['ID\tClient\tOwner\tStage\tAmount\tProbability\tLatestNote']
+            .concat(state.deals.map(d => `${d.id}\t${d.client}\t${d.owner}\t${d.stage}\t${d.amount}\t${d.probability}%\t${(d.notes || []).slice(-1)[0] || ''}`));
+          downloadFile('QUASAR13_Deals.xls', rows.join('\n'), 'application/vnd.ms-excel');
+        };
+      }
+
+      document.querySelectorAll('[data-advance-deal]').forEach(btn => {
+        btn.onclick = () => {
+          const stages = ['Lead / Discovery', 'Proposal', 'Negotiation', 'Closed Won'];
+          const d = state.deals.find(x => x.id === btn.dataset.advanceDeal);
+          if (!d) return;
+          d.stage = stages[(stages.indexOf(d.stage) + 1) % stages.length];
+          logAction('CRM_DEAL_STAGE', `${d.id} → ${d.stage}`);
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-note-deal]').forEach(btn => {
+        btn.onclick = () => {
+          const d = state.deals.find(x => x.id === btn.dataset.noteDeal);
+          const note = prompt(`Log note for ${d.client}:`);
+          if (note && note.trim()) {
+            d.notes = d.notes || [];
+            d.notes.push(`[${nowStamp().slice(0, 16)}] ${note.trim()}`);
+            logAction('CRM_DEAL_NOTE', `${d.id}: ${note.trim()}`);
+            renderAll();
+          }
+        };
+      });
+
+      document.querySelectorAll('[data-del-deal]').forEach(btn => {
+        btn.onclick = () => {
+          state.deals = state.deals.filter(x => x.id !== btn.dataset.delDeal);
+          logAction('CRM_DEAL_DELETE', btn.dataset.delDeal);
+          renderAll();
+        };
+      });
+
+      const addLeadBtn = document.getElementById('addLeadBtn');
+      if (addLeadBtn) {
+        addLeadBtn.onclick = () => {
+          const name = prompt('Lead Name:');
+          if (!name || !name.trim()) return;
+          const company = (prompt('Company:') || '').trim();
+          const email = (prompt('Email:') || '').trim();
+          state.leads.unshift({ id: 'LD-' + (state.leads.length + 1), name: name.trim(), company, email, status: 'New' });
+          logAction('CRM_LEAD_ADD', name.trim());
+          renderAll();
+        };
+      }
+
+      document.querySelectorAll('[data-convert-lead]').forEach(btn => {
+        btn.onclick = () => {
+          const idx = state.leads.findIndex(l => l.id === btn.dataset.convertLead);
+          if (idx < 0) return;
+          const [lead] = state.leads.splice(idx, 1);
+          state.deals.unshift({
+            id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
+            client: lead.company || lead.name,
+            owner: state.user?.name || '',
+            stage: 'Lead / Discovery',
+            amount: 0,
+            probability: 0,
+            notes: [`Converted from lead ${lead.name}${lead.email ? ' (' + lead.email + ')' : ''}`]
+          });
+          logAction('CRM_LEAD_CONVERT', lead.name);
+          renderAll();
+        };
+      });
+
+      const addTaskBtn = document.getElementById('addTaskBtn');
+      if (addTaskBtn) {
+        addTaskBtn.onclick = () => {
+          const title = prompt('Task Description:');
+          if (!title || !title.trim()) return;
+          const due = (prompt('Due Date (YYYY-MM-DD):') || '').trim();
+          state.tasks.unshift({ id: 'TK-' + Date.now(), title: title.trim(), due, owner: state.user?.name || '', done: false });
+          logAction('CRM_TASK_ADD', title.trim());
+          renderAll();
+        };
+      }
+
+      document.querySelectorAll('[data-toggle-task]').forEach(btn => {
+        btn.onclick = () => {
+          const t = state.tasks.find(x => x.id === btn.dataset.toggleTask);
+          if (t) { t.done = !t.done; saveState(); renderMainView(); }
+        };
+      });
+
+      // Gmail
+      ['gmailSignInBtn', 'gmailSignInBtn2', 'reauthGmailBtn', 'reauthGmailBtn2', 'wsSignInBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = () => authorizeWithGoogle();
+      });
+      const syncGmailBtn = document.getElementById('syncGmailBtn');
+      if (syncGmailBtn) syncGmailBtn.onclick = fetchGmailInbox;
+
+      const composeGmailBtn = document.getElementById('composeGmailBtn');
+      if (composeGmailBtn) {
+        composeGmailBtn.onclick = async () => {
+          const to = prompt('Recipient email:');
+          const sub = prompt('Subject:');
+          const body = prompt('Message body:');
+          if (!to || !sub) return;
+          if (runtime.googleAccessToken) {
+            try {
+              await sendDirectGmail(to, sub, body || '');
+              alert('Email sent directly via Gmail API.');
+              return;
+            } catch {}
+          }
+          window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sub)}&body=${encodeURIComponent(body || '')}`, '_blank');
+        };
+      }
+
+      document.querySelectorAll('[data-ai-email]').forEach(btn => {
+        btn.onclick = async () => {
+          const em = runtime.gmailMessages.find(x => x.id === btn.dataset.aiEmail);
+          const out = document.getElementById(`ai-email-out-${em.id}`);
+          out.style.display = 'block';
+          out.textContent = 'Analyzing with gemini-3.5-flash-lite...';
+          out.textContent = await callGemini35FlashLite(
+            `Summarize this email in 2 bullets, extract action items or figures, and draft a concise professional reply:\nFrom: ${em.from}\nSubject: ${em.subject}\nSnippet: ${em.snippet}`
+          );
+        };
+      });
+
+      document.querySelectorAll('[data-email-to-deal]').forEach(btn => {
+        btn.onclick = () => {
+          const em = runtime.gmailMessages.find(x => x.id === btn.dataset.emailToDeal);
+          if (!em) return;
+          const amount = Number(prompt(`Deal amount (USD) for "${em.subject}":`, '')) || 0;
+          state.deals.unshift({
+            id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
+            client: em.from.split('<')[0].trim() || em.subject.slice(0, 32),
+            owner: state.user?.name || '',
+            stage: 'Lead / Discovery',
+            amount,
+            probability: 0,
+            notes: [`From Gmail: ${em.subject}`]
+          });
+          logAction('GMAIL_TO_DEAL', em.subject);
+          alert('Converted email into a CRM Deal.');
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-extract-email]').forEach(btn => {
+        btn.onclick = () => {
+          const em = runtime.gmailMessages.find(x => x.id === btn.dataset.extractEmail);
+          if (!em) return;
+          const fmt = btn.dataset.fmt;
+          if (fmt === 'xls') downloadFile(`Gmail_${em.id}.xls`, `Subject\tFrom\tDate\tSnippet\n${em.subject}\t${em.from}\t${em.date}\t${em.snippet}`, 'application/vnd.ms-excel');
+          if (fmt === 'doc') downloadFile(`Gmail_${em.id}.doc`, `Subject: ${em.subject}\nFrom: ${em.from}\nDate: ${em.date}\n\n${em.snippet}`, 'application/msword');
+          if (fmt === 'pbi') downloadFile(`Gmail_${em.id}.pbids.json`, JSON.stringify({ source: 'QUASAR-13 Gmail Extractor', email: em }, null, 2), 'application/json');
+        };
+      });
+
+      // Chat
+      const sendOrg = document.getElementById('sendOrgChatBtn');
+      if (sendOrg) {
+        sendOrg.onclick = async () => {
+          const inp = document.getElementById('orgChatInput');
+          const text = inp?.value.trim();
+          if (!text) return;
+          if (!state.user) {
+            alert('Please sign in with your Google Account first to send messages.');
+            return;
+          }
+          const msg = {
+            sender: `${state.user.name} (${state.user.email})`,
+            time: nowStamp().slice(11, 16),
+            text,
+            createdAt: Date.now()
+          };
+          if (runtime.firestoreDb) {
+            try {
+              const { collection, addDoc } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK}/firebase-firestore.js`);
+              await addDoc(collection(runtime.firestoreDb, 'quasar13_org_chat'), msg);
+            } catch {
+              state.orgMessages.push(msg);
+            }
+          } else {
+            state.orgMessages.push(msg);
+          }
+          inp.value = '';
+          logAction('ORG_CHAT', text.slice(0, 60));
+          renderAll();
+        };
+      }
+
+      const sendE2e = document.getElementById('sendE2eChatBtn');
+      if (sendE2e) {
+        sendE2e.onclick = async () => {
+          const inp = document.getElementById('e2eChatInput');
+          const pass = document.getElementById('e2ePassphrase')?.value;
+          const text = inp?.value.trim();
+          if (!text) return;
+          if (!pass) { alert('Enter a room passphrase first to encrypt with AES-256-GCM.'); return; }
+          if (!state.user) { alert('Sign in with your Google Account first.'); return; }
+          const enc = new TextEncoder();
+          const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+          const salt = crypto.getRandomValues(new Uint8Array(12));
+          const aesKey = await crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+            baseKey, { name: 'AES-GCM', length: 256 }, false, ['encrypt']
+          );
+          const iv = crypto.getRandomValues(new Uint8Array(12));
+          const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, enc.encode(text));
+          const tag = Array.from(new Uint8Array(cipherBuf).slice(0, 10)).map(b => b.toString(16).padStart(2, '0')).join('');
+          state.encryptedMessages.push({
+            sender: state.user.name,
+            cipher: `AES256GCM::${tag}`,
+            plain: text
+          });
+          inp.value = '';
+          logAction('E2E_CHAT', 'Sent AES-256-GCM encrypted message');
+          renderAll();
+        };
+      }
+
+      // Workspace
+      const syncWs = document.getElementById('syncWorkspaceBtn');
+      if (syncWs) syncWs.onclick = fetchAllGoogleWorkspaceData;
+
+      const createCalBtn = document.getElementById('createCalEventBtn');
+      if (createCalBtn) {
+        createCalBtn.onclick = async () => {
+          const title = prompt('Meeting Title:');
+          if (!title) return;
+          if (!runtime.googleAccessToken) {
+            window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}`, '_blank');
+            return;
+          }
+          const start = new Date(Date.now() + 3600000).toISOString();
+          const end = new Date(Date.now() + 5400000).toISOString();
+          try {
+            await googleApiFetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                summary: title,
+                start: { dateTime: start },
+                end: { dateTime: end },
+                conferenceData: { createRequest: { requestId: 'qsr-' + Date.now() } }
+              })
+            });
+            logAction('GCAL_CREATE', `Scheduled "${title}" with Meet link`);
+            fetchCalendarEvents();
+          } catch (err) {
+            alert(err.message);
+          }
+        };
+      }
+
+      document.querySelectorAll('[data-import-contact]').forEach(btn => {
+        btn.onclick = () => {
+          const c = runtime.contactsList[Number(btn.dataset.importContact)];
+          if (!c) return;
+          state.leads.unshift({ id: 'LD-' + (state.leads.length + 1), name: c.name, company: c.org, email: c.email, status: 'Google Contact' });
+          logAction('CONTACT_TO_LEAD', c.name);
+          alert(`Imported ${c.name} into CRM Leads.`);
+          saveState();
+        };
+      });
+
+      const runTranslate = document.getElementById('runTranslateBtn');
+      if (runTranslate) {
+        runTranslate.onclick = async () => {
+          const txt = document.getElementById('translateInput').value.trim();
+          const lang = document.getElementById('translateTargetLang').value;
+          const out = document.getElementById('translateOutput');
+          if (!txt) return;
+          out.textContent = `Translating into ${lang} via gemini-3.5-flash-lite...`;
+          out.textContent = await callGemini35FlashLite(`Translate the following text accurately into ${lang}. Return only the translation:\n\n${txt}`);
+        };
+      }
+
+      // Multimodal Extractor
+      const runMmBtn = document.getElementById('runMmExtractBtn');
+      if (runMmBtn) {
+        runMmBtn.onclick = async () => {
+          const file = document.getElementById('mmFileInput')?.files?.[0];
+          const promptText = document.getElementById('mmPromptInput').value.trim() || 'Extract all structured entities, values, and tables into clean tab-separated columns.';
+          const out = document.getElementById('mmOutputBox');
+          if (!file) { alert('Select a PDF, image, CSV, or text file first.'); return; }
+          out.textContent = `Processing ${file.name} (${Math.round(file.size / 1024)} KB) with gemini-3.5-flash-lite...`;
+
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result).split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          out.textContent = await callGemini35FlashLite(promptText, {
+            inlineData: { mime_type: file.type || 'application/pdf', data: base64 },
+            thinkingLevel: 'medium'
+          });
+        };
+      }
+
+      const dlMmXls = document.getElementById('dlMmXlsBtn');
+      if (dlMmXls) dlMmXls.onclick = () => downloadFile('QUASAR13_Extracted.xls', document.getElementById('mmOutputBox').textContent, 'application/vnd.ms-excel');
+      const dlMmDoc = document.getElementById('dlMmDocBtn');
+      if (dlMmDoc) dlMmDoc.onclick = () => downloadFile('QUASAR13_Extracted.doc', document.getElementById('mmOutputBox').textContent, 'application/msword');
+
+      // HRMS & DBMS
+      const addEmp = document.getElementById('addEmpBtn');
+      if (addEmp) {
+        addEmp.onclick = () => {
+          const name = prompt('Full Name:');
+          if (!name || !name.trim()) return;
+          const email = (prompt('Work Email:') || '').trim();
+          const title = (prompt('Job Title:') || '').trim();
+          const dept = (prompt('Department:') || '').trim();
+          const manager = (prompt('Manager:') || '').trim();
+          state.employees.push({
+            id: 'EMP-' + String(state.employees.length + 1).padStart(3, '0'),
+            name: name.trim(),
+            email,
+            title,
+            dept,
+            manager,
+            status: 'Active'
+          });
+          logAction('DBMS_EMP_ADD', name.trim());
+          renderAll();
+        };
+      }
+
+      const expDbms = document.getElementById('exportDbmsBtn');
+      if (expDbms) {
+        expDbms.onclick = () => {
+          const rows = ['ID\tName\tEmail\tTitle\tDepartment\tManager\tStatus']
+            .concat(state.employees.map(e => `${e.id}\t${e.name}\t${e.email}\t${e.title}\t${e.dept}\t${e.manager}\t${e.status}`));
+          downloadFile('QUASAR13_Employee_DBMS.xls', rows.join('\n'), 'application/vnd.ms-excel');
+        };
+      }
+
+      const reqLeave = document.getElementById('requestLeaveBtn');
+      if (reqLeave) {
+        reqLeave.onclick = () => {
+          if (!state.user) { alert('Sign in with your Google Account first.'); return; }
+          const dates = prompt('Leave Dates (e.g., YYYY-MM-DD to YYYY-MM-DD):');
+          if (!dates || !dates.trim()) return;
+          const type = (prompt('Leave Type:') || 'Leave').trim();
+          state.leaves.unshift({ id: 'LV-' + (state.leaves.length + 1), employee: state.user.name, type, dates: dates.trim(), status: 'Pending' });
+          logAction('HRMS_LEAVE_REQ', dates.trim());
+          renderAll();
+        };
+      }
+
+      document.querySelectorAll('[data-approve-leave]').forEach(btn => {
+        btn.onclick = () => {
+          const lv = state.leaves.find(x => x.id === btn.dataset.approveLeave);
+          if (lv) { lv.status = 'Approved'; logAction('HRMS_LEAVE_APPROVE', lv.id); renderAll(); }
+        };
+      });
+
+      // Reports & Terminal
+      const genReport = document.getElementById('generateCustomReportBtn');
+      if (genReport) {
+        genReport.onclick = async () => {
+          const promptText = document.getElementById('customReportPrompt').value.trim();
+          if (!promptText) { alert('Enter a report prompt first.'); return; }
+          const fmt = document.getElementById('customReportFormat').value;
+          const preview = document.getElementById('aiReportPreview');
+          preview.textContent = 'Generating report with gemini-3.5-flash-lite...';
+          const result = await callGemini35FlashLite(`Generate a structured enterprise report formatted for (${fmt}): ${promptText}`, { thinkingLevel: 'medium' });
+          preview.textContent = result;
+          if (fmt === 'xls') downloadFile('QUASAR13_AI_Report.xls', result, 'application/vnd.ms-excel');
+          else if (fmt === 'doc') downloadFile('QUASAR13_AI_Report.doc', result, 'application/msword');
+          else if (fmt === 'pbi') downloadFile('QUASAR13_AI_Dashboard.pbids.json', JSON.stringify({ model: GEMINI_MODEL, prompt: promptText, analysis: result, deals: state.deals, employees: state.employees }, null, 2), 'application/json');
+          else window.print();
+        };
+      }
+
+      const runTerm = document.getElementById('runTermBtn');
+      if (runTerm) {
+        runTerm.onclick = async () => {
+          const mode = document.getElementById('termLangSelect').value;
+          const code = document.getElementById('termCodeInput').value.trim();
+          const out = document.getElementById('termOutput');
+          if (!code) return;
+          if (mode === 'SQL') {
+            const m = code.match(/from\s+(\w+)/i);
+            const tbl = m ? m[1] : '';
+            const tables = { deals: state.deals, leads: state.leads, tasks: state.tasks, employees: state.employees, leaves: state.leaves, auditTrail: state.auditTrail };
+            const rows = tables[tbl];
+            out.textContent = rows
+              ? `[SQL Live Query — ${rows.length} rows]\n` + (rows.length ? JSON.stringify(rows, null, 2) : '(0 rows)')
+              : `Table "${tbl}" not found. Available tables: ${Object.keys(tables).join(', ')}`;
+            logAction('TERM_SQL', code);
+          } else {
+            out.textContent = `Running ${mode} via gemini-3.5-flash-lite...`;
+            out.textContent = await callGemini35FlashLite(`Mode: ${mode}. Produce clean output for:\n${code}`, { thinkingLevel: 'medium' });
+          }
+        };
+      }
+
+      // AI Memory
+      const addMem = document.getElementById('addMemBtn');
+      if (addMem) {
+        addMem.onclick = () => {
+          const title = document.getElementById('memTitleInput').value.trim();
+          const instruction = document.getElementById('memInstructionInput').value.trim();
+          if (title && instruction) {
+            state.aiMemories.push({ id: Date.now(), title, instruction });
+            logAction('AI_MEMORY_ADD', title);
+            renderAll();
+          }
+        };
+      }
+      document.querySelectorAll('[data-del-mem]').forEach(btn => {
+        btn.onclick = () => {
+          state.aiMemories = state.aiMemories.filter(m => String(m.id) !== btn.dataset.delMem);
+          renderAll();
+        };
+      });
+    }
+
+    function updateCloudIndicator() {
+      const dot = document.getElementById('cloudStatusDot');
+      const ready = Boolean(config.firebaseConfigJson || config.googleOAuthClientId);
+      dot.className = 'status-dot ' + (ready ? 'dot-green' : 'dot-amber');
+    }
+
+    function renderAll() {
+      document.documentElement.setAttribute('data-theme', state.theme);
+      document.documentElement.setAttribute('data-mode', state.mode);
+
+      const authBtn = document.getElementById('googleAuthBtn');
+      const authLabel = document.getElementById('authLabel');
+      const svgIcon = document.getElementById('googleSvgIcon');
+      const oldAvatar = authBtn.querySelector('.avatar-img');
+      if (oldAvatar) oldAvatar.remove();
+
+      if (state.user) {
+        authLabel.textContent = state.user.name.split(' ')[0];
+        if (state.user.photo) {
+          svgIcon.style.display = 'none';
+          const img = document.createElement('img');
+          img.src = state.user.photo;
+          img.className = 'avatar-img';
+          authBtn.prepend(img);
+        }
+      } else {
+        svgIcon.style.display = 'block';
+        authLabel.textContent = 'Sign in with Google';
+      }
+
+      updateCloudIndicator();
+      renderSidebar();
+      renderMainView();
+      saveState();
+    }
+
+    // Static header bindings
+    document.getElementById('menuToggle').onclick = () => document.getElementById('sidebarNav').classList.toggle('collapsed');
+    document.getElementById('connectBtn').onclick = () => openConnectModal();
+    document.getElementById('googleAuthBtn').onclick = () => state.user ? openAccountModal() : authorizeWithGoogle();
+
+    document.getElementById('themeBtn').onclick = () => {
+      const modal = document.getElementById('modalBackdrop');
+      const content = document.getElementById('modalContent');
+      modal.style.display = 'grid';
+      content.innerHTML = `
+        <div class="section-header"><div class="section-title">Liquid Glass Theme Studio</div><button class="btn-secondary" id="closeModalBtn">✕</button></div>
+        <div class="muted" style="margin-bottom:0.75rem;">92% Transparent • 5px Blur • 10-Shade Spectrum</div>
+        <div class="grid-2" style="margin-bottom:0.85rem;">
+          <button class="glass-pill ${state.theme === 'ios27' ? 'active' : ''}" style="padding:0.65rem;" data-t="ios27">iOS 27 Liquid Glass</button>
+          <button class="glass-pill ${state.theme === 'gemini' ? 'active' : ''}" style="padding:0.65rem;" data-t="gemini">Google Gemini</button>
+          <button class="glass-pill ${state.theme === 'oneui' ? 'active' : ''}" style="padding:0.65rem;" data-t="oneui">Samsung One UI</button>
+          <button class="glass-pill ${state.theme === 'harmonyos' ? 'active' : ''}" style="padding:0.65rem;" data-t="harmonyos">Honor HarmonyOS</button>
+        </div>
+        <div class="grid-2">
+          <button class="glass-pill ${state.mode === 'dark' ? 'active' : ''}" style="padding:0.6rem;" data-m="dark">Dark Mode</button>
+          <button class="glass-pill ${state.mode === 'light' ? 'active' : ''}" style="padding:0.6rem;" data-m="light">Light Mode</button>
+        </div>
+      `;
+      document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
+      content.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { state.theme = b.dataset.t; renderAll(); document.getElementById('themeBtn').click(); });
+      content.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { state.mode = b.dataset.m; renderAll(); document.getElementById('themeBtn').click(); });
+    };
+
+    document.getElementById('globalSearch').oninput = (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const overlay = document.getElementById('searchOverlay');
+      if (!q) { overlay.style.display = 'none'; return; }
+      const hits = [
+        ...state.deals.filter(d => d.client.toLowerCase().includes(q)).map(d => `Deal: ${d.client} ($${d.amount})`),
+        ...state.leads.filter(l => l.name.toLowerCase().includes(q) || (l.company || '').toLowerCase().includes(q)).map(l => `Lead: ${l.name}`),
+        ...state.employees.filter(x => x.name.toLowerCase().includes(q) || (x.email || '').toLowerCase().includes(q)).map(x => `Staff: ${x.name}`),
+        ...runtime.gmailMessages.filter(m => m.subject.toLowerCase().includes(q)).map(m => `Gmail: ${m.subject}`),
+        ...runtime.driveFiles.filter(f => f.name.toLowerCase().includes(q)).map(f => `Drive: ${f.name}`)
+      ];
+      overlay.style.display = 'block';
+      overlay.innerHTML = `<strong>Live Search Matches (${hits.length}):</strong> ` +
+        (hits.length ? hits.slice(0, 12).map(h => `<span class="pill-tag" style="margin:0.2rem;">${esc(h)}</span>`).join('') : '<span class="muted">No matching records found.</span>');
+    };
+
+    // Floating Gemini 3.5 Flash-Lite Copilot
+    const aiDrawer = document.getElementById('aiDrawer');
+    document.getElementById('fabAiBtn').onclick = () => { aiDrawer.style.display = aiDrawer.style.display === 'none' ? 'block' : 'none'; };
+    document.getElementById('closeAiDrawer').onclick = () => { aiDrawer.style.display = 'none'; };
+    document.getElementById('aiSendBtn').onclick = async () => {
+      const inp = document.getElementById('aiPromptInput');
+      const log = document.getElementById('aiChatLog');
+      const q = inp.value.trim();
+      if (!q) return;
+      log.textContent += `\n\n> You: ${q}\n[gemini-3.5-flash-lite thinking...]`;
+      inp.value = '';
+      const reply = await callGemini35FlashLite(q);
+      log.textContent = log.textContent.replace('[gemini-3.5-flash-lite thinking...]', `[gemini-3.5-flash-lite]:\n${reply}`);
+      log.scrollTop = log.scrollHeight;
+    };
+
+    // Dense Multi-Layer Parallax Technical Vector Canvas
+    function initVectorCanvas() {
+      const canvas = document.getElementById('vector-canvas');
+      const ctx = canvas.getContext('2d');
+      let w = (canvas.width = window.innerWidth);
+      let h = (canvas.height = window.innerHeight);
+      window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
+
+      const count = w < 768 ? 85 : 145;
+      const kinds = ['stack', 'hex', 'node', 'ring', 'glyph'];
+      const glyphs = ['01', 'SQL', 'API', 'P2P', 'E2E', 'AI', 'DB', '13'];
+      const particles = Array.from({ length: count }, (_, i) => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+        size: 8 + Math.random() * 14, kind: kinds[i % kinds.length],
+        glyph: glyphs[i % glyphs.length], rot: Math.random() * Math.PI * 2
+      }));
+
+      const shade = (v, fb) => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || fb;
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        const c1 = shade('--s-300', '#38bdf8');
+        const c2 = shade('--s-500', '#0a84ff');
+        const c3 = shade('--s-200', '#7dd3fc');
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx; p.y += p.vy; p.rot += 0.004;
+          if (p.x < -30) p.x = w + 30; if (p.x > w + 30) p.x = -30;
+          if (p.y < -30) p.y = h + 30; if (p.y > h + 30) p.y = -30;
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j];
+            const dist = Math.hypot(p.x - q.x, p.y - q.y);
+            if (dist < 115) {
+              ctx.strokeStyle = c2;
+              ctx.globalAlpha = (1 - dist / 115) * 0.26;
+              ctx.lineWidth = 0.8;
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+            }
+          }
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.strokeStyle = i % 2 === 0 ? c1 : c3; ctx.fillStyle = c1;
+          ctx.globalAlpha = 0.4; ctx.lineWidth = 1.1;
+          if (p.kind === 'stack') {
+            for (let s = -1; s <= 1; s++) ctx.strokeRect(-p.size * 0.6, s * 5 - 2, p.size * 1.2, 3.5);
+          } else if (p.kind === 'hex') {
+            ctx.beginPath();
+            for (let k = 0; k < 6; k++) {
+              const a = (Math.PI / 3) * k;
+              k === 0 ? ctx.moveTo(Math.cos(a) * p.size * 0.75, Math.sin(a) * p.size * 0.75) : ctx.lineTo(Math.cos(a) * p.size * 0.75, Math.sin(a) * p.size * 0.75);
+            }
+            ctx.closePath(); ctx.stroke();
+          } else if (p.kind === 'ring') {
+            ctx.beginPath(); ctx.arc(0, 0, p.size * 0.7, 0, Math.PI * 2); ctx.stroke();
+          } else if (p.kind === 'glyph') {
+            ctx.font = '600 10px JetBrains Mono, monospace'; ctx.fillText(p.glyph, -10, 4);
+          } else {
+            ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.restore();
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    // Boot Sequence
+    initVectorCanvas();
+    renderAll();
+    loadLiveNews();
+    initFirebaseIfConfigured().then(() => {
+      if (state.user && runtime.googleAccessToken) {
+        fetchAllGoogleWorkspaceData();
+      } else if (state.user && config.googleOAuthClientId) {
+        setTimeout(() => authorizeWithGoogle(state.user.email), 1200);
+      }
+    });
   </script>
 </body>
 </html>
