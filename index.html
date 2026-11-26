@@ -139,7 +139,7 @@
       top: 0.75rem;
       z-index: 40;
       margin: 0.75rem auto 0;
-      width: min(1480px, calc(100% - 1.5rem));
+      width: min(1500px, calc(100% - 1.5rem));
       padding: 0.65rem 1rem;
       display: flex;
       align-items: center;
@@ -172,7 +172,7 @@
     .orbit-group { transform-origin: 24px 24px; animation: blackholeOrbit 5.5s linear infinite; }
 
     .search-box {
-      flex: 1 1 220px; max-width: 420px; display: flex; align-items: center; gap: 0.5rem;
+      flex: 1 1 220px; max-width: 440px; display: flex; align-items: center; gap: 0.5rem;
       padding: 0.45rem 0.85rem; border-radius: 9999px;
       background: color-mix(in srgb, var(--s-600) 8%, transparent);
       backdrop-filter: blur(5px); border: 1px solid var(--border-subtle);
@@ -208,10 +208,10 @@
     .avatar-img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1px solid var(--s-200); }
 
     .workspace {
-      width: min(1480px, calc(100% - 1.5rem));
+      width: min(1500px, calc(100% - 1.5rem));
       margin: 1rem auto 3rem;
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr);
+      grid-template-columns: 265px minmax(0, 1fr);
       gap: 1rem;
       align-items: start;
     }
@@ -223,8 +223,8 @@
     nav.sidebar.collapsed { display: none; }
 
     .nav-item {
-      width: 100%; text-align: left; padding: 0.62rem 0.95rem;
-      font-size: 0.86rem; display: flex; align-items: center; justify-content: space-between;
+      width: 100%; text-align: left; padding: 0.6rem 0.95rem;
+      font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between;
     }
 
     .content-area { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
@@ -314,14 +314,14 @@
 
     .drawer {
       position: fixed; right: 1.35rem; bottom: 5.5rem; z-index: 60;
-      width: min(440px, calc(100vw - 2rem)); max-height: 76vh; overflow-y: auto; padding: 1.1rem;
+      width: min(450px, calc(100vw - 2rem)); max-height: 78vh; overflow-y: auto; padding: 1.1rem;
     }
 
     .modal-backdrop {
       position: fixed; inset: 0; z-index: 70; background: rgba(2, 6, 23, 0.55);
       backdrop-filter: blur(5px); display: grid; place-items: center; padding: 1rem;
     }
-    .modal-card { width: min(560px, 100%); padding: 1.25rem; max-height: 88vh; overflow-y: auto; }
+    .modal-card { width: min(580px, 100%); padding: 1.25rem; max-height: 88vh; overflow-y: auto; }
 
     .tool-tile { padding: 1rem; display: flex; flex-direction: column; gap: 0.45rem; justify-content: space-between; }
 
@@ -381,11 +381,11 @@
 
       <div class="search-box">
         <span style="opacity: 0.75;">⌕</span>
-        <input id="globalSearch" type="text" placeholder="Search deals, leads, Gmail, Drive, contacts, staff..." />
+        <input id="globalSearch" type="text" placeholder="Search deals, leads, tickets, Gmail, Drive, contacts, staff..." />
       </div>
 
       <div class="header-actions">
-        <button class="icon-btn" id="aiKeyBtn" title="Set Gemini 3.5 Flash-Lite API Key">
+        <button class="icon-btn" id="aiKeyBtn" title="Configure Gemini 3.5 Flash-Lite API Key">
           <span id="aiDot" class="status-dot dot-amber"></span>
           <span>Gemini Key</span>
         </button>
@@ -395,7 +395,7 @@
           <span>Themes</span>
         </button>
 
-        <button class="icon-btn" id="googleAuthBtn" title="Sign in directly with Google">
+        <button class="icon-btn" id="googleAuthBtn" title="Sign in or manage your Google Account">
           <svg width="18" height="18" viewBox="0 0 24 24" id="googleSvgIcon">
             <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
             <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
@@ -407,7 +407,7 @@
       </div>
     </header>
 
-    <div id="searchOverlay" class="glass panel" style="display:none; width:min(1480px, calc(100% - 1.5rem)); margin: 0.75rem auto 0;"></div>
+    <div id="searchOverlay" class="glass panel" style="display:none; width:min(1500px, calc(100% - 1.5rem)); margin: 0.75rem auto 0;"></div>
 
     <div class="workspace">
       <nav class="sidebar glass" id="sidebarNav"></nav>
@@ -415,20 +415,20 @@
     </div>
   </div>
 
-  <!-- Floating Gemini 3.5 Flash-Lite Copilot -->
-  <button class="fab-ai" id="fabAiBtn" title="QUASAR-13 Copilot (Gemini 3.5 Flash-Lite)">AI</button>
+  <!-- Floating Gemini 3.5 Flash-Lite Autonomous Copilot -->
+  <button class="fab-ai" id="fabAiBtn" title="QUASAR-13 Autonomous Copilot (Gemini 3.5 Flash-Lite)">AI</button>
 
   <div class="drawer glass" id="aiDrawer" style="display:none;">
     <div class="section-header">
       <div>
-        <strong>QUASAR-13 AI Copilot</strong>
-        <div class="muted" style="font-size:0.74rem;">Engine: <code>gemini-3.5-flash-lite</code></div>
+        <strong>QUASAR-13 Autonomous Copilot</strong>
+        <div class="muted" style="font-size:0.74rem;">Model: <code>gemini-3.5-flash-lite</code> (1M context)</div>
       </div>
       <button class="btn-secondary" id="closeAiDrawer">✕</button>
     </div>
-    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:250px;">Ready on gemini-3.5-flash-lite. Click "Gemini Key" in the top bar once to activate live AI responses.</div>
+    <div id="aiChatLog" class="terminal-box" style="margin-bottom:0.65rem; max-height:255px;">Ready on gemini-3.5-flash-lite. Click "Gemini Key" once in the top bar. Ask me to analyze deals, draft replies, or command me to create tasks/leads/deals.</div>
     <div style="display:flex; gap:0.45rem;">
-      <input id="aiPromptInput" type="text" placeholder="Ask AI about your deals, emails, tasks, or data..." />
+      <input id="aiPromptInput" type="text" placeholder="Ask or command AI (e.g., Create a task to follow up tomorrow)..." />
       <button class="btn-primary" id="aiSendBtn">Run</button>
     </div>
   </div>
@@ -479,8 +479,8 @@
     const rtdb = getDatabase(app);
 
     const GEMINI_MODEL = 'gemini-3.5-flash-lite';
-    const STORAGE_KEY = 'quasar13_prod_v4';
-    const GEMINI_KEY_STORAGE = 'quasar13_gemini_key_v4';
+    const STORAGE_KEY = 'quasar13_enterprise_v5';
+    const GEMINI_KEY_STORAGE = 'quasar13_gemini_key_v5';
 
     const WORKSPACE_SCOPES = [
       'https://www.googleapis.com/auth/gmail.readonly',
@@ -502,7 +502,7 @@
       { id: 'ENTERTAINMENT', label: 'Entertainment', rss: 'https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
-    // ZERO FICTIONAL DATA — Every workspace collection starts empty
+    // ZERO FICTIONAL DATA — Every entity array starts strictly empty
     const EMPTY_STATE = {
       theme: 'ios27',
       mode: 'dark',
@@ -518,6 +518,9 @@
       deals: [],
       leads: [],
       tasks: [],
+      quotes: [],
+      tickets: [],
+      workflows: [],
       employees: [],
       leaves: [],
       orgMessages: [],
@@ -564,6 +567,9 @@
             deals: state.deals,
             leads: state.leads,
             tasks: state.tasks,
+            quotes: state.quotes,
+            tickets: state.tickets,
+            workflows: state.workflows,
             employees: state.employees,
             leaves: state.leaves,
             aiMemories: state.aiMemories,
@@ -595,7 +601,7 @@
         action,
         detail
       });
-      if (state.auditTrail.length > 350) state.auditTrail.length = 350;
+      if (state.auditTrail.length > 400) state.auditTrail.length = 400;
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
     }
 
@@ -613,7 +619,36 @@
     }
 
     // =========================================================================
-    // 1. DIRECT REAL GOOGLE ACCOUNT SIGN-IN (FIREBASE AUTH + PERSISTENT SESSION)
+    // 1. REAL NO-CODE WORKFLOW AUTOMATION ENGINE (BEATS SALESFORCE FLOW)
+    // =========================================================================
+    function runWorkflows(triggerEvent, contextLabel) {
+      const matching = state.workflows.filter(w => w.enabled && w.trigger === triggerEvent);
+      matching.forEach(wf => {
+        if (wf.action === 'CREATE_TASK') {
+          state.tasks.unshift({
+            id: 'TK-' + Date.now() + Math.floor(Math.random() * 99),
+            title: `[Auto: ${wf.name}] ${wf.actionDetail || 'Follow up on ' + contextLabel}`,
+            due: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
+            owner: state.user?.name || '',
+            done: false
+          });
+        } else if (wf.action === 'CREATE_TICKET') {
+          state.tickets.unshift({
+            id: 'TCK-' + String(state.tickets.length + 1).padStart(3, '0'),
+            subject: `[Auto: ${wf.name}] ${wf.actionDetail || contextLabel}`,
+            client: contextLabel,
+            priority: 'High',
+            status: 'Open',
+            created: nowStamp().slice(0, 16)
+          });
+        }
+        wf.runs = (wf.runs || 0) + 1;
+        logAction('WORKFLOW_EXECUTED', `${wf.name} triggered by ${triggerEvent} (${contextLabel})`);
+      });
+    }
+
+    // =========================================================================
+    // 2. DIRECT REAL GOOGLE ACCOUNT AUTH (PERSISTENT ACROSS EVERY REFRESH)
     // =========================================================================
     async function signInWithGoogleDirect(includeWorkspaceScopes = false) {
       const provider = new GoogleAuthProvider();
@@ -631,7 +666,7 @@
           sessionStorage.setItem('quasar13_google_token', cred.accessToken);
         }
         applyFirebaseUser(result.user);
-        logAction('GOOGLE_SIGNIN', `Authorized ${result.user.email}`);
+        logAction('GOOGLE_SIGNIN', `Verified ${result.user.email}`);
         if (includeWorkspaceScopes && runtime.googleAccessToken) {
           fetchAllGoogleWorkspaceData();
         }
@@ -643,7 +678,7 @@
         if (err.code === 'auth/popup-closed-by-user') return;
         alert(
           'Google Sign-In Error: ' + err.message +
-          '\n\nEnsure "' + window.location.hostname + '" is added under Firebase Console → Authentication → Settings → Authorized domains.'
+          '\n\nEnsure "' + window.location.hostname + '" is listed under Firebase Console → Authentication → Settings → Authorized domains.'
         );
       }
     }
@@ -668,13 +703,15 @@
         });
       }
 
-      // Hydrate user's saved cloud workspace if local is empty
       get(ref(rtdb, `quasar13/workspaces/${fbUser.uid}`)).then(snap => {
         if (!snap.exists()) return;
         const d = snap.val();
         if (Array.isArray(d.deals) && !state.deals.length) state.deals = d.deals;
         if (Array.isArray(d.leads) && !state.leads.length) state.leads = d.leads;
         if (Array.isArray(d.tasks) && !state.tasks.length) state.tasks = d.tasks;
+        if (Array.isArray(d.quotes) && !state.quotes.length) state.quotes = d.quotes;
+        if (Array.isArray(d.tickets) && !state.tickets.length) state.tickets = d.tickets;
+        if (Array.isArray(d.workflows) && !state.workflows.length) state.workflows = d.workflows;
         if (Array.isArray(d.employees) && d.employees.length > state.employees.length) state.employees = d.employees;
         if (Array.isArray(d.leaves) && !state.leaves.length) state.leaves = d.leaves;
         if (Array.isArray(d.aiMemories) && !state.aiMemories.length) state.aiMemories = d.aiMemories;
@@ -715,7 +752,7 @@
       renderAll();
     }
 
-    // Boot Auth Persistence immediately
+    // Persist Google session automatically across every refresh
     setPersistence(auth, browserLocalPersistence).catch(() => {});
     getRedirectResult(auth).then((res) => {
       if (res) {
@@ -735,12 +772,12 @@
     });
 
     // =========================================================================
-    // 2. GEMINI 3.5 FLASH-LITE ENGINE (Text + Native Multimodal)
+    // 3. GEMINI 3.5 FLASH-LITE ENGINE (TEXT + MULTIMODAL + AGENTIC ACTIONS)
     // =========================================================================
     async function callGemini35FlashLite(promptText, opts = {}) {
       if (!geminiApiKey) {
         openGeminiKeyModal();
-        return '⚠️ Enter your Google AI Studio API Key in the popup to activate gemini-3.5-flash-lite.';
+        return '⚠️ Paste your Google AI Studio API Key in the popup to activate gemini-3.5-flash-lite.';
       }
 
       const memoryBlock = state.aiMemories.length
@@ -753,6 +790,9 @@
           deals: state.deals.length,
           leads: state.leads.length,
           tasks: state.tasks.length,
+          quotes: state.quotes.length,
+          tickets: state.tickets.length,
+          workflows: state.workflows.length,
           employees: state.employees.length,
           gmailSynced: runtime.gmailMessages.length,
           contactsSynced: runtime.contactsList.length,
@@ -760,17 +800,23 @@
         },
         deals: state.deals.slice(0, 25),
         leads: state.leads.slice(0, 25),
-        tasks: state.tasks.slice(0, 25)
+        tasks: state.tasks.slice(0, 25),
+        tickets: state.tickets.slice(0, 20)
       });
+
+      const agentInstruction = opts.allowActions
+        ? `\nIf the user explicitly asks to create a CRM deal, lead, task, or ticket, append ONE JSON block wrapped in <action>{"type":"CREATE_DEAL|CREATE_LEAD|CREATE_TASK|CREATE_TICKET","data":{...}}</action> with fields (client/amount/probability for deal; name/company/email for lead; title/due for task; subject/client/priority for ticket). Never invent records unless asked.`
+        : '';
 
       const sysInstruction =
         `You are QUASAR-13 Enterprise AI Copilot running on Google ${GEMINI_MODEL}. ` +
-        `Never invent fictional records, people, or figures. Base analysis strictly on the live workspace state below.\n` +
-        `Live Workspace State: ${crmSnapshot}${memoryBlock}\n${opts.systemContext || ''}`;
+        `Never invent fictional data, people, or financial numbers. Base every insight strictly on the live workspace state below.\n` +
+        `Live Workspace State: ${crmSnapshot}${memoryBlock}${agentInstruction}\n${opts.systemContext || ''}`;
 
       const userParts = [{ text: promptText }];
       if (opts.inlineData) userParts.push({ inline_data: opts.inlineData });
 
+      // Gemini 3.5 Flash-Lite GA spec: omit deprecated temperature/top_p/top_k
       const payload = {
         system_instruction: { parts: [{ text: sysInstruction }] },
         contents: [{ role: 'user', parts: userParts }]
@@ -793,10 +839,23 @@
         );
         const data = await res.json();
         if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
-        const text = data.candidates?.[0]?.content?.parts
+        let text = data.candidates?.[0]?.content?.parts
           ?.filter(p => !p.thought && p.text)
           .map(p => p.text)
           .join('\n') || 'No response returned.';
+
+        // Execute autonomous CRM action if requested by user
+        if (opts.allowActions) {
+          const match = text.match(/<action>([\s\S]*?)<\/action>/);
+          if (match) {
+            try {
+              const cmd = JSON.parse(match[1]);
+              executeAiAgentCommand(cmd);
+              text = text.replace(match[0], `\n[✓ Autonomous Action Executed: ${cmd.type}]`);
+            } catch {}
+          }
+        }
+
         logAction('GEMINI_35_FLASH_LITE', promptText.slice(0, 85));
         return text;
       } catch (err) {
@@ -804,12 +863,55 @@
       }
     }
 
+    function executeAiAgentCommand(cmd) {
+      const d = cmd.data || {};
+      if (cmd.type === 'CREATE_DEAL' && d.client) {
+        state.deals.unshift({
+          id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
+          client: String(d.client),
+          owner: state.user?.name || '',
+          stage: 'Lead / Discovery',
+          amount: Number(d.amount) || 0,
+          probability: Number(d.probability) || 0,
+          notes: ['Created by Gemini 3.5 Flash-Lite Agent']
+        });
+        runWorkflows('DEAL_CREATED', String(d.client));
+      } else if (cmd.type === 'CREATE_LEAD' && d.name) {
+        state.leads.unshift({
+          id: 'LD-' + (state.leads.length + 1),
+          name: String(d.name),
+          company: String(d.company || ''),
+          email: String(d.email || ''),
+          status: 'New'
+        });
+        runWorkflows('LEAD_CREATED', String(d.name));
+      } else if (cmd.type === 'CREATE_TASK' && d.title) {
+        state.tasks.unshift({
+          id: 'TK-' + Date.now(),
+          title: String(d.title),
+          due: String(d.due || new Date().toISOString().slice(0, 10)),
+          owner: state.user?.name || '',
+          done: false
+        });
+      } else if (cmd.type === 'CREATE_TICKET' && d.subject) {
+        state.tickets.unshift({
+          id: 'TCK-' + String(state.tickets.length + 1).padStart(3, '0'),
+          subject: String(d.subject),
+          client: String(d.client || ''),
+          priority: String(d.priority || 'Medium'),
+          status: 'Open',
+          created: nowStamp().slice(0, 16)
+        });
+      }
+      renderAll();
+    }
+
     // =========================================================================
-    // 3. LIVE GOOGLE WORKSPACE API FETCHERS (REAL DATA ONLY)
+    // 4. LIVE GOOGLE WORKSPACE API FETCHERS (REAL DATA ONLY)
     // =========================================================================
     async function googleApiFetch(url, options = {}) {
       if (!runtime.googleAccessToken) {
-        throw new Error('Grant Google Workspace access (Gmail, Calendar, Drive, Contacts) to load live inbox & files.');
+        throw new Error('Grant Google Workspace access (Gmail, Calendar, Drive, Contacts) to load your live data.');
       }
       const res = await fetch(url, {
         ...options,
@@ -844,7 +946,7 @@
             snippet: d.snippet || ''
           };
         });
-        logAction('GMAIL_SYNC', `Loaded ${runtime.gmailMessages.length} real Gmail threads`);
+        logAction('GMAIL_SYNC', `Fetched ${runtime.gmailMessages.length} live Gmail threads`);
       } catch (err) {
         runtime.gmailError = err.message;
       } finally {
@@ -912,7 +1014,7 @@
     }
 
     // =========================================================================
-    // 4. LIVE CHRONOLOGICAL GOOGLE NEWS (ALWAYS ACCESSIBLE + PERSONALIZABLE)
+    // 5. LIVE CHRONOLOGICAL GOOGLE NEWS (ALWAYS VISIBLE + PERSONALIZABLE)
     // =========================================================================
     async function fetchRssFeed(rssUrl, categoryLabel) {
       try {
@@ -986,11 +1088,13 @@
     }
 
     // =========================================================================
-    // 5. NAVIGATION & MODULE VIEWS (ZERO FICTIONAL DATA, NO ROLE BUTTON)
+    // 6. NAVIGATION & ENTERPRISE MODULES (ZERO FICTIONAL DATA)
     // =========================================================================
     const NAV_ITEMS = [
       { id: 'news', label: 'Google News Feed' },
-      { id: 'crm', label: 'CRM Pipeline & Funnel' },
+      { id: 'crm', label: 'CRM Pipeline & Leads' },
+      { id: 'cpq', label: 'Quotes & Service Desk' },
+      { id: 'workflows', label: 'Workflow Automation' },
       { id: 'gmail', label: 'Gmail Inbox Preview' },
       { id: 'chat', label: 'Team & E2EE Chat' },
       { id: 'workspace', label: 'Google Workspace Suite' },
@@ -1030,7 +1134,7 @@
           <div class="section-header">
             <div>
               <div class="section-title">Live Chronological Google News</div>
-              <div class="muted">Visible regardless of user sign-in • Active feed: ${esc(activeLabels.join(', '))}</div>
+              <div class="muted">Visible regardless of sign-in • Active feed: ${esc(activeLabels.join(', '))}</div>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
               <button class="btn-primary" id="personalizeNewsBtn">⚙ Personalize</button>
@@ -1094,7 +1198,7 @@
         <div class="glass panel">
           <div class="section-header" style="margin-bottom:0.65rem;">
             <div class="section-title">Live Revenue Stage Funnel</div>
-            <span class="muted">Calculated strictly from your real deals</span>
+            <span class="muted">Computed exclusively from your real pipeline</span>
           </div>
           <div class="grid-4">
             ${stages.map(st => {
@@ -1116,7 +1220,7 @@
           <div class="section-header">
             <div>
               <div class="section-title">Deal Pipeline & Activity Lifecycle</div>
-              <div class="muted">Kanban + Table • Call notes • CSV import/export • Gemini 3.5 Flash-Lite Deal Coach</div>
+              <div class="muted">Kanban + Table • Call notes • CSV import/export • Gemini 3.5 Flash-Lite Predictive Deal Coach</div>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
               <button class="btn-primary" id="addDealBtn">+ Add Deal</button>
@@ -1132,8 +1236,8 @@
 
           ${!state.deals.length ? `
             <div class="empty-state">
-              <div class="section-title">No deals recorded</div>
-              <p class="muted" style="margin:0.4rem 0 0.9rem;">Add your first real deal, import a CSV, or convert an email from your Gmail Inbox Preview.</p>
+              <div class="section-title">No deals recorded yet</div>
+              <p class="muted" style="margin:0.4rem 0 0.9rem;">Add your first real deal, import a CSV, or convert an email from Gmail Inbox Preview.</p>
               <button class="btn-primary" id="emptyAddDealBtn">+ Add Deal</button>
             </div>
           ` : state.crmView === 'kanban' ? `
@@ -1228,13 +1332,113 @@
       `;
     }
 
+    function renderCPQ() {
+      return `
+        <div class="grid-2">
+          <div class="glass panel">
+            <div class="section-header">
+              <div>
+                <div class="section-title">CPQ Quotes & Proposals</div>
+                <div class="muted">Generate tax-calculated enterprise quotes and export to Doc or PDF</div>
+              </div>
+              <button class="btn-primary" id="addQuoteBtn">+ Create Quote</button>
+            </div>
+            ${!state.quotes.length ? `
+              <div class="empty-state muted">No quotes created yet. Click "+ Create Quote" to generate a real client quote.</div>
+            ` : state.quotes.map(q => `
+              <div class="glass panel" style="padding:0.85rem; margin-bottom:0.6rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong>${esc(q.id)} — ${esc(q.client)}</strong>
+                  <span class="pill-tag">$${Number(q.total).toLocaleString()}</span>
+                </div>
+                <div class="muted" style="font-size:0.78rem; margin:0.25rem 0 0.5rem;">${esc(q.items)} • Tax: ${q.taxPct}% • Status: ${esc(q.status)}</div>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                  <button class="btn-secondary" data-export-quote="${q.id}">⬇ Export Doc</button>
+                  <button class="btn-secondary" data-approve-quote="${q.id}">${q.status === 'Accepted' ? 'Accepted ✓' : 'Mark Accepted'}</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="glass panel">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Customer Support Desk & SLA Tickets</div>
+                <div class="muted">Track client issues with instant Gemini 3.5 Flash-Lite resolution drafts</div>
+              </div>
+              <button class="btn-primary" id="addTicketBtn">+ New Ticket</button>
+            </div>
+            ${!state.tickets.length ? `
+              <div class="empty-state muted">No support tickets logged yet.</div>
+            ` : state.tickets.map(t => `
+              <div class="glass panel" style="padding:0.85rem; margin-bottom:0.6rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong>${esc(t.id)}: ${esc(t.subject)}</strong>
+                  <span class="pill-tag">${esc(t.priority)} • ${esc(t.status)}</span>
+                </div>
+                <div class="muted" style="font-size:0.76rem; margin:0.25rem 0 0.5rem;">Account: ${esc(t.client || '—')} • Logged: ${esc(t.created)}</div>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                  <button class="btn-primary" data-ai-ticket="${t.id}">✦ AI Draft Fix</button>
+                  <button class="btn-secondary" data-close-ticket="${t.id}">${t.status === 'Resolved' ? 'Reopen' : 'Resolve ✓'}</button>
+                </div>
+                <div id="ai-tck-${t.id}" class="terminal-box" style="display:none; margin-top:0.55rem;"></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWorkflows() {
+      return `
+        <div class="glass panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">No-Code CRM Workflow Automations</div>
+              <div class="muted">Live IF → THEN automation rules that execute automatically on real CRM events</div>
+            </div>
+            <button class="btn-primary" id="addWorkflowBtn">+ New Automation Rule</button>
+          </div>
+          ${!state.workflows.length ? `
+            <div class="empty-state">
+              <div class="section-title">No automation rules configured yet</div>
+              <p class="muted" style="margin:0.4rem 0 0.9rem;">Create rules like "When Deal Closed Won → Auto-create Onboarding Task" or "When Lead Added → Auto-create Follow-Up Task".</p>
+              <button class="btn-primary" id="emptyAddWfBtn">+ Build First Workflow</button>
+            </div>
+          ` : `
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Rule Name</th><th>Trigger Event</th><th>Automated Action</th><th>Detail</th><th>Runs</th><th>Status</th><th>Controls</th></tr></thead>
+                <tbody>
+                  ${state.workflows.map(w => `
+                    <tr>
+                      <td><strong>${esc(w.name)}</strong></td>
+                      <td><span class="pill-tag">${esc(w.trigger)}</span></td>
+                      <td>${esc(w.action)}</td>
+                      <td class="muted">${esc(w.actionDetail || '—')}</td>
+                      <td>${w.runs || 0}</td>
+                      <td>${w.enabled ? 'Active' : 'Paused'}</td>
+                      <td style="display:flex; gap:0.35rem;">
+                        <button class="btn-secondary" data-toggle-wf="${w.id}">${w.enabled ? 'Pause' : 'Enable'}</button>
+                        <button class="btn-secondary" data-del-wf="${w.id}">Delete</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
     function renderGmail() {
       return `
         <div class="glass panel">
           <div class="section-header">
             <div>
               <div class="section-title">Live Gmail Inbox Preview + AI Deal & File Extractor</div>
-              <div class="muted">${state.user ? `Signed in as ${esc(state.user.email)}` : 'Sign in with your Google Account to load your real Gmail inbox'}</div>
+              <div class="muted">${state.user ? `Signed in as ${esc(state.user.email)}` : 'Sign in with Google to preview your real Gmail inbox'}</div>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
               ${state.user
@@ -1277,7 +1481,8 @@
               <p style="font-size:0.85rem; margin-bottom:0.65rem;">${esc(em.snippet)}</p>
               <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
                 <button class="btn-primary" data-ai-email="${esc(em.id)}">✦ AI Summary & Reply</button>
-                <button class="btn-secondary" data-email-to-deal="${esc(em.id)}">+ Create CRM Deal</button>
+                <button class="btn-secondary" data-email-to-deal="${esc(em.id)}">+ CRM Deal</button>
+                <button class="btn-secondary" data-email-to-ticket="${esc(em.id)}">+ Ticket</button>
                 <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="xls">Excel (.xls)</button>
                 <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="doc">Doc (.doc)</button>
                 <button class="btn-secondary" data-extract-email="${esc(em.id)}" data-fmt="pbi">Power BI</button>
@@ -1354,7 +1559,7 @@
           <div class="section-header">
             <div>
               <div class="section-title">Complete Google Organization Suite</div>
-              <div class="muted">Meet, Calendar, Contacts, Drive, Translate, Docs, Sheets, Slides, Keep, Forms, Tasks & Looker Studio</div>
+              <div class="muted">Meet, Calendar, Contacts, Drive, Translate, Docs, Sheets, Slides, Keep, Forms, Tasks, Looker & Admin</div>
             </div>
             ${state.user
               ? (runtime.googleAccessToken
@@ -1363,7 +1568,7 @@
               : `<button class="btn-primary" id="wsSignInBtn">Sign in with Google</button>`}
           </div>
           <div class="grid-4">
-            <div class="glass tool-tile"><strong>Google Meet</strong><div class="muted">Instant video meetings</div><a class="btn-primary" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer">Start Meet ↗</a></div>
+            <div class="glass tool-tile"><strong>Google Meet</strong><div class="muted">Instant HD video meetings</div><a class="btn-primary" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer">Start Meet ↗</a></div>
             <div class="glass tool-tile"><strong>Google Calendar</strong><div class="muted">Events + auto Meet link</div><div style="display:flex; gap:0.35rem; flex-wrap:wrap;"><button class="btn-primary" id="createCalEventBtn">+ New Event</button><a class="btn-secondary" href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">Open ↗</a></div></div>
             <div class="glass tool-tile"><strong>Google Drive</strong><div class="muted">Shared cloud storage</div><a class="btn-secondary" href="https://drive.google.com" target="_blank" rel="noopener noreferrer">Open Drive ↗</a></div>
             <div class="glass tool-tile"><strong>Google Contacts</strong><div class="muted">Sync & import to CRM</div><a class="btn-secondary" href="https://contacts.google.com" target="_blank" rel="noopener noreferrer">Contacts ↗</a></div>
@@ -1447,13 +1652,13 @@
         <div class="glass panel">
           <div class="section-header">
             <div>
-              <div class="section-title">Multimodal Document, PDF & Image AI Extractor</div>
-              <div class="muted">Powered natively by <code>gemini-3.5-flash-lite</code> (PDF, PNG/JPG, CSV, TXT)</div>
+              <div class="section-title">Multimodal PDF, Image, Audio & Document AI Extractor</div>
+              <div class="muted">Powered natively by <code>gemini-3.5-flash-lite</code> (1M token context: PDF, PNG/JPG, MP3/WAV, CSV, TXT)</div>
             </div>
           </div>
           <div class="grid-2">
             <div style="display:flex; flex-direction:column; gap:0.6rem;">
-              <input type="file" id="mmFileInput" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.csv" />
+              <input type="file" id="mmFileInput" accept=".pdf,.png,.jpg,.jpeg,.webp,.mp3,.wav,.txt,.csv" />
               <textarea id="mmPromptInput" rows="4" placeholder="Describe what to extract into a clean table for Excel/Docs..."></textarea>
               <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                 <button class="btn-primary" id="runMmExtractBtn">✦ Extract with 3.5 Flash-Lite</button>
@@ -1461,7 +1666,7 @@
                 <button class="btn-secondary" id="dlMmDocBtn">⬇ Export Doc (.doc)</button>
               </div>
             </div>
-            <div class="terminal-box" id="mmOutputBox">Upload a PDF, image, invoice, or manual and click Extract.</div>
+            <div class="terminal-box" id="mmOutputBox">Upload a PDF, image, call recording, invoice, or manual and click Extract.</div>
           </div>
         </div>
       `;
@@ -1473,7 +1678,7 @@
           <div class="section-header">
             <div>
               <div class="section-title">Employee DBMS & Organization Directory</div>
-              <div class="muted">Populated exclusively by real signed-in Google accounts and added team members</div>
+              <div class="muted">Populated exclusively by signed-in Google accounts and added team members</div>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
               <button class="btn-primary" id="addEmpBtn">+ Add Employee</button>
@@ -1539,7 +1744,7 @@
             <div class="section-header">
               <div>
                 <div class="section-title">AI Reports & Executive Studio</div>
-                <div class="muted">Powered by <code>gemini-3.5-flash-lite</code></div>
+                <div class="muted">Powered by <code>gemini-3.5-flash-lite</code> (medium reasoning)</div>
               </div>
             </div>
             <div style="display:flex; flex-direction:column; gap:0.55rem; margin-bottom:0.85rem;">
@@ -1561,7 +1766,7 @@
             <div class="section-header">
               <div>
                 <div class="section-title">Live CRM SQL & AI Code Terminal</div>
-                <div class="muted">Query real workspace tables or generate Python/SQL/HTML via Gemini 3.5 Flash-Lite</div>
+                <div class="muted">Query real tables or generate Python/SQL/HTML via Gemini 3.5 Flash-Lite</div>
               </div>
               <select id="termLangSelect" style="width:auto;">
                 <option value="SQL">SQL (Live Tables)</option>
@@ -1572,7 +1777,7 @@
             </div>
             <textarea id="termCodeInput" rows="4" style="font-family:var(--font-mono); margin-bottom:0.55rem;" placeholder="SELECT * FROM deals;"></textarea>
             <button class="btn-primary" id="runTermBtn" style="margin-bottom:0.65rem;">▶ Execute</button>
-            <div class="terminal-box" id="termOutput">Available SQL tables: deals, leads, tasks, employees, leaves, auditTrail.</div>
+            <div class="terminal-box" id="termOutput">Available SQL tables: deals, leads, tasks, quotes, tickets, workflows, employees, leaves, auditTrail.</div>
           </div>
         </div>
       `;
@@ -1640,6 +1845,8 @@
       const views = {
         news: renderNews,
         crm: renderCRM,
+        cpq: renderCPQ,
+        workflows: renderWorkflows,
         gmail: renderGmail,
         chat: renderChat,
         workspace: renderWorkspace,
@@ -1654,7 +1861,7 @@
     }
 
     // =========================================================================
-    // 6. MODALS & INTERACTIONS
+    // 7. MODALS & INTERACTIONS
     // =========================================================================
     function openPersonalizeNewsModal() {
       const modal = document.getElementById('modalBackdrop');
@@ -1725,7 +1932,7 @@
           <div class="section-title">Gemini 3.5 Flash-Lite API Key</div>
           <button class="btn-secondary" id="closeModalBtn">✕</button>
         </div>
-        <div class="muted" style="margin-bottom:0.75rem;">Stored only in your browser so your public GitHub repository stays safe from key revocation.</div>
+        <div class="muted" style="margin-bottom:0.75rem;">Stored only in your browser so your public GitHub repository never exposes or revokes your Google AI Studio key.</div>
         <input id="geminiKeyField" type="password" value="${esc(geminiApiKey)}" placeholder="Paste your Google AI Studio API Key (AIzaSy...)" style="margin-bottom:0.85rem;" />
         <div style="display:flex; gap:0.5rem;">
           <button class="btn-primary" id="saveGeminiKeyBtn" style="flex:1;">Save Key</button>
@@ -1761,7 +1968,7 @@
           <div>
             <strong>${esc(state.user.name)}</strong>
             <div class="muted">${esc(state.user.email)}</div>
-            <div class="muted" style="font-size:0.74rem;">Firebase Google Auth • Persisted across refreshes</div>
+            <div class="muted" style="font-size:0.74rem;">Firebase Google Auth • Remembered across refreshes</div>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
@@ -1774,6 +1981,49 @@
       document.getElementById('connectWsScopesBtn').onclick = () => { modal.style.display = 'none'; signInWithGoogleDirect(true); };
       document.getElementById('switchGoogleBtn').onclick = () => { modal.style.display = 'none'; signInWithGoogleDirect(false); };
       document.getElementById('signOutBtn').onclick = () => { modal.style.display = 'none'; handleSignOut(); };
+    }
+
+    function openWorkflowModal() {
+      const modal = document.getElementById('modalBackdrop');
+      const content = document.getElementById('modalContent');
+      modal.style.display = 'grid';
+      content.innerHTML = `
+        <div class="section-header">
+          <div class="section-title">Create Live Automation Workflow</div>
+          <button class="btn-secondary" id="closeModalBtn">✕</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.7rem;">
+          <input id="wfName" type="text" placeholder="Workflow Name (e.g., Auto Onboarding Task)" />
+          <select id="wfTrigger">
+            <option value="DEAL_CREATED">WHEN: New Deal Created</option>
+            <option value="DEAL_CLOSED_WON">WHEN: Deal Moves to Closed Won</option>
+            <option value="LEAD_CREATED">WHEN: New Lead Added</option>
+          </select>
+          <select id="wfAction">
+            <option value="CREATE_TASK">THEN: Auto-Create Follow-Up Task</option>
+            <option value="CREATE_TICKET">THEN: Auto-Open Onboarding/Support Ticket</option>
+          </select>
+          <input id="wfDetail" type="text" placeholder="Task or Ticket detail template (optional)" />
+          <button class="btn-primary" id="saveWfBtn">Save Active Automation</button>
+        </div>
+      `;
+      document.getElementById('closeModalBtn').onclick = () => { modal.style.display = 'none'; };
+      document.getElementById('saveWfBtn').onclick = () => {
+        const name = document.getElementById('wfName').value.trim();
+        if (!name) return;
+        state.workflows.unshift({
+          id: 'WF-' + Date.now(),
+          name,
+          trigger: document.getElementById('wfTrigger').value,
+          action: document.getElementById('wfAction').value,
+          actionDetail: document.getElementById('wfDetail').value.trim(),
+          enabled: true,
+          runs: 0
+        });
+        logAction('WORKFLOW_CREATE', name);
+        modal.style.display = 'none';
+        renderAll();
+      };
     }
 
     function bindDynamicEvents() {
@@ -1832,6 +2082,7 @@
           probability,
           notes: []
         });
+        runWorkflows('DEAL_CREATED', client.trim());
         logAction('CRM_DEAL_ADD', `${id} ${client.trim()} ($${amount})`);
         renderAll();
       };
@@ -1854,7 +2105,7 @@
         aiScoreBtn.onclick = async () => {
           const box = document.getElementById('aiDealCoachBox');
           box.style.display = 'block';
-          box.textContent = 'Running gemini-3.5-flash-lite pipeline diagnostics...';
+          box.textContent = 'Running gemini-3.5-flash-lite predictive deal scoring...';
           box.textContent = await callGemini35FlashLite(
             'Analyze all active deals, notes, and leads in my workspace. Score deal health, flag stalled risks, and list exact next actions.',
             { thinkingLevel: 'medium' }
@@ -1904,6 +2155,7 @@
           const d = state.deals.find(x => x.id === btn.dataset.advanceDeal);
           if (!d) return;
           d.stage = stages[(stages.indexOf(d.stage) + 1) % stages.length];
+          if (d.stage === 'Closed Won') runWorkflows('DEAL_CLOSED_WON', d.client);
           logAction('CRM_DEAL_STAGE', `${d.id} → ${d.stage}`);
           renderAll();
         };
@@ -1938,6 +2190,7 @@
           const company = (prompt('Company:') || '').trim();
           const email = (prompt('Email:') || '').trim();
           state.leads.unshift({ id: 'LD-' + (state.leads.length + 1), name: name.trim(), company, email, status: 'New' });
+          runWorkflows('LEAD_CREATED', name.trim());
           logAction('CRM_LEAD_ADD', name.trim());
           renderAll();
         };
@@ -1948,15 +2201,17 @@
           const idx = state.leads.findIndex(l => l.id === btn.dataset.convertLead);
           if (idx < 0) return;
           const [lead] = state.leads.splice(idx, 1);
+          const account = lead.company || lead.name;
           state.deals.unshift({
             id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
-            client: lead.company || lead.name,
+            client: account,
             owner: state.user?.name || '',
             stage: 'Lead / Discovery',
             amount: 0,
             probability: 0,
             notes: [`Converted from lead ${lead.name}${lead.email ? ' (' + lead.email + ')' : ''}`]
           });
+          runWorkflows('DEAL_CREATED', account);
           logAction('CRM_LEAD_CONVERT', lead.name);
           renderAll();
         };
@@ -1978,6 +2233,90 @@
         btn.onclick = () => {
           const t = state.tasks.find(x => x.id === btn.dataset.toggleTask);
           if (t) { t.done = !t.done; saveState(); renderMainView(); }
+        };
+      });
+
+      // CPQ Quotes & Service Desk
+      const addQuoteBtn = document.getElementById('addQuoteBtn');
+      if (addQuoteBtn) {
+        addQuoteBtn.onclick = () => {
+          const client = prompt('Client / Account Name:');
+          if (!client || !client.trim()) return;
+          const items = prompt('Scope / Line Items:') || '';
+          const subtotal = Number(prompt('Subtotal (USD):', '')) || 0;
+          const taxPct = Number(prompt('Tax % (e.g., 18):', '0')) || 0;
+          const total = Math.round(subtotal * (1 + taxPct / 100));
+          const id = 'QT-' + String(state.quotes.length + 1).padStart(3, '0');
+          state.quotes.unshift({ id, client: client.trim(), items, subtotal, taxPct, total, status: 'Draft', date: nowStamp().slice(0, 10) });
+          logAction('CPQ_QUOTE_CREATE', `${id} for ${client.trim()} ($${total})`);
+          renderAll();
+        };
+      }
+
+      document.querySelectorAll('[data-export-quote]').forEach(btn => {
+        btn.onclick = () => {
+          const q = state.quotes.find(x => x.id === btn.dataset.exportQuote);
+          if (!q) return;
+          const doc = `QUASAR-13 COMMERCIAL QUOTE\nQuote ID: ${q.id}\nDate: ${q.date}\nPrepared By: ${state.user?.name || ''}\nClient: ${q.client}\n\nScope / Items:\n${q.items}\n\nSubtotal: $${q.subtotal}\nTax (${q.taxPct}%): $${q.total - q.subtotal}\nTotal Due: $${q.total}\nStatus: ${q.status}`;
+          downloadFile(`${q.id}_${q.client.replace(/\W+/g, '_')}.doc`, doc, 'application/msword');
+        };
+      });
+
+      document.querySelectorAll('[data-approve-quote]').forEach(btn => {
+        btn.onclick = () => {
+          const q = state.quotes.find(x => x.id === btn.dataset.approveQuote);
+          if (q) { q.status = 'Accepted'; logAction('CPQ_QUOTE_ACCEPT', q.id); renderAll(); }
+        };
+      });
+
+      const addTicketBtn = document.getElementById('addTicketBtn');
+      if (addTicketBtn) {
+        addTicketBtn.onclick = () => {
+          const subject = prompt('Ticket Subject / Issue:');
+          if (!subject || !subject.trim()) return;
+          const client = (prompt('Client / Account:') || '').trim();
+          const priority = (prompt('Priority (Low / Medium / High / Urgent):', 'Medium') || 'Medium').trim();
+          const id = 'TCK-' + String(state.tickets.length + 1).padStart(3, '0');
+          state.tickets.unshift({ id, subject: subject.trim(), client, priority, status: 'Open', created: nowStamp().slice(0, 16) });
+          logAction('TICKET_CREATE', `${id}: ${subject.trim()}`);
+          renderAll();
+        };
+      }
+
+      document.querySelectorAll('[data-ai-ticket]').forEach(btn => {
+        btn.onclick = async () => {
+          const t = state.tickets.find(x => x.id === btn.dataset.aiTicket);
+          const out = document.getElementById(`ai-tck-${t.id}`);
+          out.style.display = 'block';
+          out.textContent = 'Drafting SLA resolution via gemini-3.5-flash-lite...';
+          out.textContent = await callGemini35FlashLite(
+            `Draft a concise root-cause checklist and customer response email for support ticket ${t.id} ("${t.subject}", Priority: ${t.priority}, Client: ${t.client || 'N/A'}).`
+          );
+        };
+      });
+
+      document.querySelectorAll('[data-close-ticket]').forEach(btn => {
+        btn.onclick = () => {
+          const t = state.tickets.find(x => x.id === btn.dataset.closeTicket);
+          if (t) { t.status = t.status === 'Resolved' ? 'Open' : 'Resolved'; logAction('TICKET_STATUS', `${t.id} → ${t.status}`); renderAll(); }
+        };
+      });
+
+      // Workflows
+      ['addWorkflowBtn', 'emptyAddWfBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = openWorkflowModal;
+      });
+      document.querySelectorAll('[data-toggle-wf]').forEach(btn => {
+        btn.onclick = () => {
+          const w = state.workflows.find(x => x.id === btn.dataset.toggleWf);
+          if (w) { w.enabled = !w.enabled; saveState(); renderMainView(); }
+        };
+      });
+      document.querySelectorAll('[data-del-wf]').forEach(btn => {
+        btn.onclick = () => {
+          state.workflows = state.workflows.filter(x => x.id !== btn.dataset.delWf);
+          renderAll();
         };
       });
 
@@ -2028,17 +2367,37 @@
           const em = runtime.gmailMessages.find(x => x.id === btn.dataset.emailToDeal);
           if (!em) return;
           const amount = Number(prompt(`Deal amount (USD) for "${em.subject}":`, '')) || 0;
+          const client = em.from.split('<')[0].trim() || em.subject.slice(0, 32);
           state.deals.unshift({
             id: 'DL-' + String(state.deals.length + 1).padStart(3, '0'),
-            client: em.from.split('<')[0].trim() || em.subject.slice(0, 32),
+            client,
             owner: state.user?.name || '',
             stage: 'Lead / Discovery',
             amount,
             probability: 0,
             notes: [`From Gmail: ${em.subject}`]
           });
+          runWorkflows('DEAL_CREATED', client);
           logAction('GMAIL_TO_DEAL', em.subject);
           alert('Converted email into a CRM Deal.');
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-email-to-ticket]').forEach(btn => {
+        btn.onclick = () => {
+          const em = runtime.gmailMessages.find(x => x.id === btn.dataset.emailToTicket);
+          if (!em) return;
+          state.tickets.unshift({
+            id: 'TCK-' + String(state.tickets.length + 1).padStart(3, '0'),
+            subject: em.subject,
+            client: em.from.split('<')[0].trim(),
+            priority: 'Medium',
+            status: 'Open',
+            created: nowStamp().slice(0, 16)
+          });
+          logAction('GMAIL_TO_TICKET', em.subject);
+          alert('Converted email into a Support Ticket.');
           renderAll();
         };
       });
@@ -2061,10 +2420,7 @@
           const inp = document.getElementById('orgChatInput');
           const text = inp?.value.trim();
           if (!text) return;
-          if (!state.user) {
-            signInWithGoogleDirect(false);
-            return;
-          }
+          if (!state.user) { signInWithGoogleDirect(false); return; }
           const msg = {
             sender: `${state.user.name} (${state.user.email})`,
             time: nowStamp().slice(11, 16),
@@ -2151,6 +2507,7 @@
           const c = runtime.contactsList[Number(btn.dataset.importContact)];
           if (!c) return;
           state.leads.unshift({ id: 'LD-' + (state.leads.length + 1), name: c.name, company: c.org, email: c.email, status: 'Google Contact' });
+          runWorkflows('LEAD_CREATED', c.name);
           logAction('CONTACT_TO_LEAD', c.name);
           alert(`Imported ${c.name} into CRM Leads.`);
           saveState();
@@ -2176,7 +2533,7 @@
           const file = document.getElementById('mmFileInput')?.files?.[0];
           const promptText = document.getElementById('mmPromptInput').value.trim() || 'Extract all structured entities, values, and tables into clean tab-separated columns.';
           const out = document.getElementById('mmOutputBox');
-          if (!file) { alert('Select a PDF, image, CSV, or text file first.'); return; }
+          if (!file) { alert('Select a PDF, image, audio, CSV, or text file first.'); return; }
           out.textContent = `Processing ${file.name} (${Math.round(file.size / 1024)} KB) with gemini-3.5-flash-lite...`;
 
           const base64 = await new Promise((resolve, reject) => {
@@ -2279,7 +2636,11 @@
           if (mode === 'SQL') {
             const m = code.match(/from\s+(\w+)/i);
             const tbl = m ? m[1] : '';
-            const tables = { deals: state.deals, leads: state.leads, tasks: state.tasks, employees: state.employees, leaves: state.leaves, auditTrail: state.auditTrail };
+            const tables = {
+              deals: state.deals, leads: state.leads, tasks: state.tasks,
+              quotes: state.quotes, tickets: state.tickets, workflows: state.workflows,
+              employees: state.employees, leaves: state.leaves, auditTrail: state.auditTrail
+            };
             const rows = tables[tbl];
             out.textContent = rows
               ? `[SQL Live Query — ${rows.length} rows]\n` + (rows.length ? JSON.stringify(rows, null, 2) : '(0 rows)')
@@ -2348,7 +2709,7 @@
       saveState();
     }
 
-    // Static header bindings — Sign in button launches real Google account picker IMMEDIATELY
+    // Static header bindings — Sign in opens real Google account picker directly
     document.getElementById('menuToggle').onclick = () => document.getElementById('sidebarNav').classList.toggle('collapsed');
     document.getElementById('aiKeyBtn').onclick = openGeminiKeyModal;
     document.getElementById('googleAuthBtn').onclick = () => state.user ? openAccountModal() : signInWithGoogleDirect(false);
@@ -2383,6 +2744,7 @@
       const hits = [
         ...state.deals.filter(d => d.client.toLowerCase().includes(q)).map(d => `Deal: ${d.client} ($${d.amount})`),
         ...state.leads.filter(l => l.name.toLowerCase().includes(q) || (l.company || '').toLowerCase().includes(q)).map(l => `Lead: ${l.name}`),
+        ...state.tickets.filter(t => t.subject.toLowerCase().includes(q)).map(t => `Ticket: ${t.id} ${t.subject}`),
         ...state.employees.filter(x => x.name.toLowerCase().includes(q) || (x.email || '').toLowerCase().includes(q)).map(x => `Staff: ${x.name}`),
         ...runtime.gmailMessages.filter(m => m.subject.toLowerCase().includes(q)).map(m => `Gmail: ${m.subject}`),
         ...runtime.driveFiles.filter(f => f.name.toLowerCase().includes(q)).map(f => `Drive: ${f.name}`)
@@ -2392,7 +2754,7 @@
         (hits.length ? hits.slice(0, 12).map(h => `<span class="pill-tag" style="margin:0.2rem;">${esc(h)}</span>`).join('') : '<span class="muted">No matching records found.</span>');
     };
 
-    // Floating Gemini 3.5 Flash-Lite Copilot
+    // Floating Gemini 3.5 Flash-Lite Autonomous Copilot
     const aiDrawer = document.getElementById('aiDrawer');
     document.getElementById('fabAiBtn').onclick = () => { aiDrawer.style.display = aiDrawer.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('closeAiDrawer').onclick = () => { aiDrawer.style.display = 'none'; };
@@ -2403,7 +2765,7 @@
       if (!q) return;
       log.textContent += `\n\n> You: ${q}\n[gemini-3.5-flash-lite thinking...]`;
       inp.value = '';
-      const reply = await callGemini35FlashLite(q);
+      const reply = await callGemini35FlashLite(q, { allowActions: true, thinkingLevel: 'medium' });
       log.textContent = log.textContent.replace('[gemini-3.5-flash-lite thinking...]', `[gemini-3.5-flash-lite]:\n${reply}`);
       log.scrollTop = log.scrollHeight;
     };
